@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import path from 'path'
 
 export default defineConfig({
+  base: '/ML-delete-3/',
   root: 'src',
   build: {
     outDir: '../dist',
