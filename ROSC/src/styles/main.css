@@ -1,0 +1,314 @@
+/* Google Fonts - Merriweather & Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700&display=swap');
+
+/* Brand Kit Color Variables */
+:root {
+  /* Primary Brand Colors */
+  --log-cabin: #090A09;
+  --mischka: #D6D6DE;
+  --white: #FFFFFF;
+
+  /* Extended Palette */
+  --log-cabin-800: #1A1B1A;
+  --white-lilac: #F3F3F5;
+  --nickel: #737373;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  --vh: 1vh;
+}
+
+/* Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--white);
+    color: var(--log-cabin);
+  }
+
+  /* Typography - Material Lab Brand Kit Type Scale */
+
+  /* Display - Hero sections */
+  .text-display {
+    font-family: 'Merriweather', Georgia, serif;
+    font-weight: 700;
+    font-size: 3.75rem; /* 60px */
+    line-height: 1.1;
+  }
+
+  /* H1 - Page titles */
+  h1, .text-h1 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-weight: 700;
+    font-size: 3rem; /* 48px */
+    line-height: 1.2;
+  }
+
+  /* H2 - Major sections */
+  h2, .text-h2 {
+    font-family: 'Merriweather', Georgia, serif;
+    font-weight: 700;
+    font-size: 2.25rem; /* 36px */
+    line-height: 1.3;
+  }
+
+  /* H3 - Subsections, cards */
+  h3, .text-h3 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.4;
+  }
+
+  /* Body Large - Lead paragraphs */
+  .text-body-lg {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.6;
+  }
+
+  /* Body - Default text */
+  body, .text-body {
+    font-size: 1rem; /* 16px */
+    line-height: 1.6;
+  }
+
+  /* Body Small - Captions, metadata */
+  .text-body-sm {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5;
+  }
+
+  /* Caption - Labels, tags */
+  .text-caption {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.4;
+  }
+
+  /* Hide default cursor on desktop */
+  @media (pointer: fine) {
+    body,
+    body * {
+      cursor: none !important;
+    }
+  }
+}
+
+/* Color definitions - Material Lab Brand Kit */
+@layer base {
+  /* Background colors */
+  .bg-grey-50 {
+    background-color: var(--white-lilac);
+  }
+
+  .bg-grey-100 {
+    background-color: var(--white-lilac);
+  }
+
+  .bg-grey-200 {
+    background-color: var(--mischka);
+  }
+
+  .bg-grey-300 {
+    background-color: var(--mischka);
+  }
+
+  .bg-grey-700 {
+    background-color: var(--log-cabin-800);
+  }
+
+  .bg-grey-800 {
+    background-color: var(--log-cabin-800);
+  }
+
+  .bg-grey-900 {
+    background-color: var(--log-cabin);
+  }
+
+  /* Text colors */
+  .text-grey-400 {
+    color: var(--nickel);
+  }
+
+  .text-grey-500 {
+    color: var(--nickel);
+  }
+
+  .text-grey-600 {
+    color: var(--nickel);
+  }
+
+  .text-grey-700 {
+    color: var(--log-cabin-800);
+  }
+
+  .text-grey-900 {
+    color: var(--log-cabin);
+  }
+
+  /* Primary accent color - Cyan for CTA buttons */
+  .text-mint {
+    color: var(--log-cabin); /* Use dark color for text visibility on white */
+  }
+
+  .bg-mint {
+    background-color: #00FFFF; /* Keep cyan for primary CTA buttons */
+  }
+
+  /* Additional brand utilities */
+  .text-mischka {
+    color: var(--mischka);
+  }
+
+  .bg-mischka {
+    background-color: var(--mischka);
+  }
+
+  .text-log-cabin {
+    color: var(--log-cabin);
+  }
+
+  .bg-log-cabin {
+    background-color: var(--log-cabin);
+  }
+
+  .border-mischka {
+    border-color: var(--mischka);
+  }
+}
+
+/* Custom Cursor Styles */
+@layer components {
+  .custom-cursor {
+    @apply pointer-events-none fixed z-50 rounded-full items-center justify-center;
+    @apply bg-mint text-log-cabin;
+    transition: transform 0.3s ease;
+  }
+}
+
+/* Monochrome Image Filter - Brand Kit */
+@layer utilities {
+  .filter-monochrome {
+    filter: grayscale(100%) contrast(1.1);
+  }
+
+  .filter-log-cabin {
+    filter: url("#log-cabin-filter");
+  }
+}
+
+/* Preloader Styles */
+@layer components {
+  .preloader {
+    will-change: transform;
+  }
+
+  .font-display {
+    font-family: 'Merriweather', Georgia, serif;
+  }
+}
+
+/* Line Reveal Animation */
+@layer components {
+  .line-reveal {
+    overflow: hidden;
+  }
+
+  .line-wrapper {
+    overflow: hidden;
+    display: block;
+  }
+}
+
+/* Image Reveal */
+@layer components {
+  .reveal-image {
+    will-change: clip-path;
+  }
+}
+
+/* Magnetic Button */
+@layer components {
+  .magnetic {
+    will-change: transform;
+  }
+}
+
+/* Menu Styles */
+@layer components {
+  .menu-overlay {
+    @apply fixed inset-0 bg-grey-900 z-40;
+    transform-origin: top right;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  .vh-100 {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
+  /* Translate utilities */
+  .translate-y-5 {
+    transform: translateY(1.25rem);
+  }
+
+  .-translate-y-5 {
+    transform: translateY(-1.25rem);
+  }
+}
+
+/* Fade in animation class */
+@layer components {
+  .fade-in {
+    will-change: transform, opacity;
+  }
+}
+
+/* Responsive pointer-fine utilities */
+@layer utilities {
+  @media (pointer: fine) {
+    .pointer-fine\:flex {
+      display: flex;
+    }
+
+    .pointer-fine\:hidden {
+      display: none;
+    }
+
+    .pointer-fine\:block {
+      display: block;
+    }
+  }
+}
+
+/* Aspect ratios */
+@layer utilities {
+  .aspect-\[4\/3\] {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* Backdrop blur */
+@layer utilities {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
