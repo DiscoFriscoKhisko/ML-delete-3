@@ -3,9 +3,43 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+import { geoGraticule, geoPath } from 'd3-geo'
+import { geoPolyhedralWaterman } from 'd3-geo-projection'
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, SplitText, ScrollToPlugin)
+
+// ===== BRAND KIT MOTION DEFAULTS =====
+const MOTION = {
+  duration: {
+    instant: 0.1,      // Magnetic hover response (100ms)
+    fast: 0.3,
+    default: 0.5,
+    slow: 0.7,
+    marquee: 20        // Infinite marquee (20s)
+  },
+  ease: {
+    primary: 'power2.out',
+    emphatic: 'power3.out',
+    playful: 'back.out(1.5)',
+    smooth: 'power4.out',
+    brandReturn: 'power2.inOut'  // Brand kit spring-like return
+  },
+  stagger: {
+    default: 0.1,
+    fast: 0.06,        // Brand kit: 60ms
+    slow: 0.15
+  }
+}
+
+// ===== BRAND KIT COLOR PALETTE =====
+const COLORS = {
+  black: '#090909',
+  white: '#fefefe',
+  cyanGlow: '#17f7f7',
+  alabaster: '#d5dada',
+  nickel: '#737373'
+}
 
 // Preloader animation
 function initPreloader() {
@@ -19,8 +53,8 @@ function initPreloader() {
     onComplete: () => {
       gsap.to(preloader, {
         yPercent: -100,
-        duration: 0.8,
-        ease: 'power4.inOut',
+        duration: MOTION.duration.slow,
+        ease: MOTION.ease.smooth,
         onComplete: () => {
           preloader.style.display = 'none'
           pageEntranceAnimation()
@@ -32,8 +66,8 @@ function initPreloader() {
   // Fade in logo
   tl.to(logo, {
     opacity: 1,
-    duration: 0.5,
-    ease: 'power2.out'
+    duration: MOTION.duration.default,
+    ease: MOTION.ease.primary
   })
 
   // Count up animation
@@ -43,7 +77,7 @@ function initPreloader() {
       const progress = Math.round(this.progress() * 100)
       counter.textContent = progress + '%'
     },
-    ease: 'power2.inOut'
+    ease: MOTION.ease.primary
   }, '-=0.3')
 }
 
@@ -68,9 +102,9 @@ function initLineReveals() {
     gsap.from(split.lines, {
       yPercent: 100,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.12,
-      ease: 'power4.out',
+      duration: MOTION.duration.slow,
+      stagger: MOTION.stagger.default,
+      ease: MOTION.ease.smooth,
       scrollTrigger: {
         trigger: el,
         start: 'top 85%'
@@ -87,7 +121,7 @@ function initImageReveals() {
     gsap.from(img, {
       clipPath: 'inset(100% 0% 0% 0%)',
       duration: 1.2,
-      ease: 'power4.out',
+      ease: MOTION.ease.smooth,
       scrollTrigger: {
         trigger: img,
         start: 'top 80%'
@@ -109,8 +143,8 @@ function initMagneticButtons() {
       gsap.to(el, {
         x: x * 0.3,
         y: y * 0.3,
-        duration: 0.3,
-        ease: 'power2.out'
+        duration: MOTION.duration.instant,  // Brand kit: 100ms snappy response
+        ease: MOTION.ease.primary
       })
     })
 
@@ -118,8 +152,8 @@ function initMagneticButtons() {
       gsap.to(el, {
         x: 0,
         y: 0,
-        duration: 0.5,
-        ease: 'elastic.out(1, 0.3)'
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.brandReturn  // Brand kit: smooth spring-like return
       })
     })
   })
@@ -825,6 +859,857 @@ function initMaterialLabAnimations() {
   })
 }
 
+// ===== GSAP-ONLY HOVER HANDLERS (Brand Kit Motion) =====
+
+// Button hover effects (btn-primary, btn-secondary, btn-tertiary, btn-outline-dark)
+function initButtonHovers() {
+  // Primary buttons (cyan outline, transparent bg)
+  document.querySelectorAll('.btn-primary').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      gsap.to(btn, {
+        backgroundColor: 'rgba(23, 247, 247, 0.15)',
+        borderColor: 'rgba(23, 247, 247, 0.8)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        backgroundColor: 'transparent',
+        borderColor: 'rgba(23, 247, 247, 0.5)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+
+  // Secondary buttons (white outline)
+  document.querySelectorAll('.btn-secondary').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      gsap.to(btn, {
+        backgroundColor: 'rgba(254, 254, 254, 0.1)',
+        borderColor: 'rgba(254, 254, 254, 0.5)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        backgroundColor: 'transparent',
+        borderColor: 'rgba(254, 254, 254, 0.2)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+
+  // Tertiary buttons (link style with underline)
+  document.querySelectorAll('.btn-tertiary').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      gsap.to(btn, {
+        color: '#17f7f7',
+        borderBottomColor: '#17f7f7',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        color: '#d5dada',
+        borderBottomColor: 'transparent',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+
+  // Dark outline buttons
+  document.querySelectorAll('.btn-outline-dark').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      gsap.to(btn, {
+        scale: 1.02,
+        backgroundColor: '#090909',
+        color: '#fefefe',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    btn.addEventListener('mouseleave', () => {
+      gsap.to(btn, {
+        scale: 1,
+        backgroundColor: 'transparent',
+        color: '#090909',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Navigation link hover effects
+function initNavLinkHovers() {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      gsap.to(link, {
+        color: '#fefefe',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    link.addEventListener('mouseleave', () => {
+      gsap.to(link, {
+        color: 'rgba(254, 254, 254, 0.8)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+
+  // Menu links (mobile) - mint color on hover
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      gsap.to(link, {
+        color: '#17f7f7',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    link.addEventListener('mouseleave', () => {
+      gsap.to(link, {
+        color: '#fefefe',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Electric lift hover effect (-8px Y translation)
+function initElectricLiftHovers() {
+  document.querySelectorAll('.electric-lift').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      gsap.to(el, {
+        y: -2,  // Brand kit: subtle -2px lift (was -8px)
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, {
+        y: 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Grainy aura hover effect
+function initGrainyAuraHovers() {
+  document.querySelectorAll('.grainy-aura').forEach(el => {
+    const before = el.querySelector('::before')
+    const after = el.querySelector('::after')
+
+    el.addEventListener('mouseenter', () => {
+      // Animate pseudo-elements via CSS custom properties
+      gsap.to(el, {
+        '--aura-opacity': 0.8,
+        '--noise-opacity': 0.05,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+    el.addEventListener('mouseleave', () => {
+      gsap.to(el, {
+        '--aura-opacity': 0,
+        '--noise-opacity': 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Footer and social link hovers
+function initFooterLinkHovers() {
+  document.querySelectorAll('.social-link, .footer-nav-link').forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      gsap.to(link, {
+        color: '#17f7f7',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    link.addEventListener('mouseleave', () => {
+      gsap.to(link, {
+        color: 'rgba(254, 254, 254, 0.6)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+
+  document.querySelectorAll('.text-link').forEach(link => {
+    link.addEventListener('mouseenter', () => {
+      gsap.to(link, {
+        color: '#737373',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+    link.addEventListener('mouseleave', () => {
+      gsap.to(link, {
+        color: '#090909',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Custom cursor scale animation
+function initCursorScale() {
+  const cursor = document.querySelector('.custom-cursor')
+  if (!cursor) return
+
+  // Create quickTo for smooth cursor tracking
+  const xTo = gsap.quickTo(cursor, 'left', { duration: 0.2, ease: 'power2.out' })
+  const yTo = gsap.quickTo(cursor, 'top', { duration: 0.2, ease: 'power2.out' })
+
+  document.addEventListener('pointermove', (e) => {
+    xTo(e.clientX - cursor.offsetWidth / 2)
+    yTo(e.clientY - cursor.offsetHeight / 2)
+  })
+
+  // Scale on interactive elements
+  document.querySelectorAll('a, button, [data-cursor-hover]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      gsap.to(cursor, {
+        scale: 1,
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.playful
+      })
+    })
+    el.addEventListener('mouseleave', () => {
+      gsap.to(cursor, {
+        scale: 0,
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// Menu hamburger animation
+function initMenuHamburgerAnimation() {
+  const menuToggle = document.querySelector('.menu-toggle')
+  const lineTop = document.querySelector('.menu-line-top')
+  const lineBottom = document.querySelector('.menu-line-bottom')
+
+  if (!menuToggle || !lineTop || !lineBottom) return
+
+  // Watch for Alpine menuOpen state changes
+  const observer = new MutationObserver(() => {
+    const isOpen = menuToggle.closest('[x-data]')?.__x?.$data?.menuOpen
+
+    if (isOpen) {
+      gsap.to(lineTop, {
+        rotation: 45,
+        y: 4,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.emphatic
+      })
+      gsap.to(lineBottom, {
+        rotation: -45,
+        y: -4,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.emphatic
+      })
+    } else {
+      gsap.to(lineTop, {
+        rotation: 0,
+        y: 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.emphatic
+      })
+      gsap.to(lineBottom, {
+        rotation: 0,
+        y: 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.emphatic
+      })
+    }
+  })
+}
+
+// Work card transition animations (replaces Alpine x-transition)
+function initWorkCardTransitions() {
+  const cards = document.querySelectorAll('.work-card')
+
+  cards.forEach(card => {
+    // Set initial state
+    gsap.set(card, { opacity: 0, scale: 0.95 })
+
+    // Watch for x-show changes via Alpine
+    const checkVisibility = () => {
+      const isVisible = card.style.display !== 'none'
+      if (isVisible) {
+        gsap.to(card, {
+          opacity: 1,
+          scale: 1,
+          duration: MOTION.duration.fast,
+          ease: MOTION.ease.primary
+        })
+      }
+    }
+
+    // Use MutationObserver to detect display changes
+    const observer = new MutationObserver(checkVisibility)
+    observer.observe(card, { attributes: true, attributeFilter: ['style'] })
+  })
+}
+
+// Depth card hover effect (Brand Kit: layered shadows with cyan rim on hover)
+function initDepthCardHovers() {
+  document.querySelectorAll('.depth-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      gsap.to(card, {
+        y: -2,
+        boxShadow: '0 0 0 1px rgba(23, 247, 247, 0.3), 0 8px 24px rgba(0, 0, 0, 0.6), 0 24px 48px rgba(0, 0, 0, 0.6), 0 0 80px rgba(23, 247, 247, 0.1)',
+        borderColor: 'rgba(23, 247, 247, 0.1)',
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.brandReturn  // Brand kit easing
+      })
+    })
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        y: 0,
+        boxShadow: '0 0 0 1px rgba(0, 0, 0, 1), 0 4px 12px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 40px rgba(23, 247, 247, 0.02)',
+        borderColor: 'rgba(255, 255, 255, 0.08)',
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.brandReturn  // Brand kit easing
+      })
+    })
+  })
+}
+
+// Header scroll blur effect (Brand Kit: semi-transparent header with backdrop blur on scroll)
+function initHeaderScrollBlur() {
+  const header = document.querySelector('header')
+  if (!header) return
+
+  ScrollTrigger.create({
+    start: 'top -100',
+    onEnter: () => {
+      gsap.to(header, {
+        backgroundColor: 'rgba(9, 9, 9, 0.85)',
+        backdropFilter: 'blur(12px)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    },
+    onLeaveBack: () => {
+      gsap.to(header, {
+        backgroundColor: 'transparent',
+        backdropFilter: 'blur(0px)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    }
+  })
+}
+
+// Capability indicator animations
+function initCapabilityIndicatorAnimations() {
+  const indicators = document.querySelectorAll('.capability-indicator')
+
+  indicators.forEach(indicator => {
+    const dot = indicator.querySelector('.indicator-dot')
+
+    // Watch for active class changes
+    const observer = new MutationObserver(() => {
+      const isActive = indicator.classList.contains('active')
+
+      if (isActive) {
+        gsap.to(indicator, {
+          opacity: 1,
+          duration: MOTION.duration.fast,
+          ease: MOTION.ease.primary
+        })
+        gsap.to(dot, {
+          backgroundColor: '#17f7f7',
+          scale: 1.25,
+          duration: MOTION.duration.fast,
+          ease: MOTION.ease.playful
+        })
+      } else {
+        gsap.to(indicator, {
+          opacity: 0.4,
+          duration: MOTION.duration.fast,
+          ease: MOTION.ease.primary
+        })
+        gsap.to(dot, {
+          backgroundColor: '#737373',
+          scale: 1,
+          duration: MOTION.duration.fast,
+          ease: MOTION.ease.primary
+        })
+      }
+    })
+
+    observer.observe(indicator, { attributes: true, attributeFilter: ['class'] })
+  })
+}
+
+// ===== BRAND KIT: TAB NAVIGATION WITH ANIMATED UNDERLINE =====
+function initTabNavigation() {
+  const tabNavs = document.querySelectorAll('.tab-nav')
+
+  tabNavs.forEach(tabNav => {
+    const tabs = tabNav.querySelectorAll('.tab-trigger')
+    const underline = tabNav.querySelector('.tab-underline')
+
+    if (!tabs.length || !underline) return
+
+    // Set initial underline position to active tab
+    const activeTab = tabNav.querySelector('.tab-trigger.active') || tabs[0]
+    if (activeTab) {
+      activeTab.classList.add('active')
+      const rect = activeTab.getBoundingClientRect()
+      const parentRect = tabNav.getBoundingClientRect()
+      gsap.set(underline, {
+        width: rect.width,
+        x: rect.left - parentRect.left
+      })
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active from all
+        tabs.forEach(t => t.classList.remove('active'))
+        tab.classList.add('active')
+
+        // Animate underline to new position
+        const rect = tab.getBoundingClientRect()
+        const parentRect = tabNav.getBoundingClientRect()
+
+        gsap.to(underline, {
+          width: rect.width,
+          x: rect.left - parentRect.left,
+          duration: MOTION.duration.default,
+          ease: MOTION.ease.primary
+        })
+      })
+
+      // Hover effect - text color
+      tab.addEventListener('mouseenter', () => {
+        if (!tab.classList.contains('active')) {
+          gsap.to(tab, {
+            color: 'rgba(254, 254, 254, 0.9)',
+            duration: MOTION.duration.fast,
+            ease: MOTION.ease.primary
+          })
+        }
+      })
+
+      tab.addEventListener('mouseleave', () => {
+        if (!tab.classList.contains('active')) {
+          gsap.to(tab, {
+            color: 'rgba(213, 218, 218, 0.7)',
+            duration: MOTION.duration.fast,
+            ease: MOTION.ease.primary
+          })
+        }
+      })
+    })
+  })
+}
+
+// ===== BRAND KIT: HOVER CAPTION EFFECTS =====
+function initHoverCaptions() {
+  document.querySelectorAll('[data-hover-caption]').forEach(el => {
+    const caption = el.querySelector('.hover-caption')
+    if (!caption) return
+
+    el.addEventListener('mouseenter', () => {
+      gsap.to(caption, {
+        opacity: 1,
+        y: 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+
+    el.addEventListener('mouseleave', () => {
+      gsap.to(caption, {
+        opacity: 0,
+        y: 8,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
+// ===== BRAND KIT: KINETIC GRID (Canvas-based) =====
+function initKineticGrid() {
+  const canvas = document.getElementById('kinetic-grid')
+  if (!canvas) return
+
+  const ctx = canvas.getContext('2d')
+  const gridSize = 20
+  const maxDistance = 150
+  const moveStrength = 40
+  const returnDamping = 0.1
+
+  // Detect background and set color accordingly
+  const section = canvas.closest('section')
+  const bgColor = section ? window.getComputedStyle(section).backgroundColor : 'rgb(9, 9, 9)'
+  const isDark = bgColor.includes('rgb(9') || bgColor.includes('rgb(0') || bgColor.includes('#090909')
+  const gridColor = isDark ? '#17f7f7' : '#090909'
+
+  let mouseX = -1000
+  let mouseY = -1000
+  const points = []
+
+  // Resize canvas to match container
+  function resizeCanvas() {
+    const container = canvas.parentElement
+    canvas.width = container.offsetWidth
+    canvas.height = container.offsetHeight
+
+    // Reinitialize grid points
+    initPoints()
+  }
+
+  function initPoints() {
+    points.length = 0
+    const cellWidth = canvas.width / gridSize
+    const cellHeight = canvas.height / gridSize
+
+    for (let y = 0; y <= gridSize; y++) {
+      for (let x = 0; x <= gridSize; x++) {
+        points.push({
+          originX: x * cellWidth,
+          originY: y * cellHeight,
+          x: x * cellWidth,
+          y: y * cellHeight
+        })
+      }
+    }
+  }
+
+  // Mouse tracking
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect()
+    mouseX = e.clientX - rect.left
+    mouseY = e.clientY - rect.top
+  })
+
+  canvas.addEventListener('mouseleave', () => {
+    mouseX = -1000
+    mouseY = -1000
+  })
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.strokeStyle = gridColor
+    ctx.lineWidth = 0.5
+    ctx.globalAlpha = 0.4
+
+    // Update points
+    points.forEach(point => {
+      const dx = mouseX - point.x
+      const dy = mouseY - point.y
+      const dist = Math.sqrt(dx * dx + dy * dy)
+
+      if (dist < maxDistance) {
+        const force = (maxDistance - dist) / maxDistance
+        const angle = Math.atan2(dy, dx)
+        point.x = point.originX - Math.cos(angle) * force * moveStrength
+        point.y = point.originY - Math.sin(angle) * force * moveStrength
+      } else {
+        point.x += (point.originX - point.x) * returnDamping
+        point.y += (point.originY - point.y) * returnDamping
+      }
+    })
+
+    // Draw horizontal lines
+    for (let y = 0; y <= gridSize; y++) {
+      ctx.beginPath()
+      for (let x = 0; x <= gridSize; x++) {
+        const point = points[y * (gridSize + 1) + x]
+        if (x === 0) {
+          ctx.moveTo(point.x, point.y)
+        } else {
+          ctx.lineTo(point.x, point.y)
+        }
+      }
+      ctx.stroke()
+    }
+
+    // Draw vertical lines
+    for (let x = 0; x <= gridSize; x++) {
+      ctx.beginPath()
+      for (let y = 0; y <= gridSize; y++) {
+        const point = points[y * (gridSize + 1) + x]
+        if (y === 0) {
+          ctx.moveTo(point.x, point.y)
+        } else {
+          ctx.lineTo(point.x, point.y)
+        }
+      }
+      ctx.stroke()
+    }
+
+    // Draw dots at ALL grid intersections with cyan glow (Brand Kit compliance)
+    if (isDark) {
+      ctx.shadowColor = COLORS.cyanGlow
+      ctx.shadowBlur = 4
+    }
+    ctx.fillStyle = gridColor
+    ctx.globalAlpha = 0.8
+    points.forEach(point => {
+      ctx.beginPath()
+      ctx.arc(point.x, point.y, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+    })
+    ctx.shadowBlur = 0  // Reset shadow
+
+    requestAnimationFrame(animate)
+  }
+
+  // Initialize
+  resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+  animate()
+}
+
+// ===== BRAND KIT: DYMAXION MAP (Waterman Butterfly Projection) =====
+// Uses d3-geo and d3-geo-projection for authentic Waterman butterfly map
+function initDymaxionGlobe() {
+  const canvas = document.getElementById('dymaxion-globe')
+  if (!canvas) return
+
+  const ctx = canvas.getContext('2d')
+  const container = canvas.parentElement
+  const size = Math.min(container.offsetWidth, container.offsetHeight) || 400
+  const color = '#17f7f7'
+  const rotationSpeed = 0.2
+
+  // City coordinates (lat, lng) - BLR and SF only
+  const cities = [
+    { name: 'BLR', lat: 12.9716, lng: 77.5946 },
+    { name: 'SF', lat: 37.7749, lng: -122.4194 }
+  ]
+
+  // Setup d3-geo Waterman projection
+  const projection = geoPolyhedralWaterman()
+  const pathGenerator = geoPath()
+    .projection(projection)
+    .context(ctx)
+  const graticule = geoGraticule()
+
+  let rotation = 0
+
+  function render() {
+    ctx.clearRect(0, 0, size, size)
+
+    // Update rotation
+    rotation += rotationSpeed
+    projection.rotate([rotation, -30, 0]) // Rotate world, tilt slightly
+    projection.fitSize([size, size], { type: 'Sphere' }) // Fit to canvas
+
+    // Style
+    ctx.lineWidth = 0.5
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+
+    // Draw Graticule (the world grid) - characteristic of Waterman projection
+    ctx.beginPath()
+    ctx.strokeStyle = color
+    ctx.globalAlpha = 0.3
+    pathGenerator(graticule())
+    ctx.stroke()
+
+    // Draw Outline (the projection shape - butterfly)
+    ctx.beginPath()
+    ctx.strokeStyle = color
+    ctx.lineWidth = 1.5
+    ctx.globalAlpha = 0.8
+    pathGenerator({ type: 'Sphere' })
+    ctx.stroke()
+
+    // Draw cities
+    cities.forEach(city => {
+      const coords = [city.lng, city.lat]
+      const projected = projection(coords)
+
+      if (projected) {
+        const [x, y] = projected
+
+        // Glow effect
+        ctx.beginPath()
+        ctx.fillStyle = color
+        ctx.globalAlpha = 0.4
+        ctx.arc(x, y, 4, 0, Math.PI * 2)
+        ctx.fill()
+
+        // City dot with cyan glow (Brand Kit enhancement)
+        ctx.shadowColor = COLORS.cyanGlow
+        ctx.shadowBlur = 8
+        ctx.beginPath()
+        ctx.fillStyle = COLORS.white
+        ctx.globalAlpha = 1
+        ctx.arc(x, y, 2, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.shadowBlur = 0  // Reset shadow
+
+        // City label
+        ctx.font = '10px monospace'
+        ctx.fillStyle = color
+        ctx.globalAlpha = 0.9
+        ctx.fillText(city.name.toUpperCase(), x + 5, y + 3)
+
+        // Leader line
+        ctx.beginPath()
+        ctx.strokeStyle = color
+        ctx.lineWidth = 0.5
+        ctx.globalAlpha = 0.6
+        ctx.moveTo(x, y)
+        ctx.lineTo(x + 4, y + 2)
+        ctx.stroke()
+      }
+    })
+
+    requestAnimationFrame(render)
+  }
+
+  // High DPI setup
+  const dpr = window.devicePixelRatio || 1
+  canvas.width = size * dpr
+  canvas.height = size * dpr
+  canvas.style.width = `${size}px`
+  canvas.style.height = `${size}px`
+  ctx.scale(dpr, dpr)
+
+  render()
+}
+
+// ===== BRAND KIT: STAGGERED TEXT REVEAL =====
+function initStaggeredReveal() {
+  const elements = document.querySelectorAll('.stagger-reveal')
+
+  elements.forEach((el, index) => {
+    // Use SplitText for word-level animation
+    const split = new SplitText(el, { type: 'words', wordsClass: 'word' })
+
+    gsap.from(split.words, {
+      y: 40,
+      opacity: 0,
+      duration: MOTION.duration.slow,  // Brand kit: 700ms
+      stagger: MOTION.stagger.fast,    // Brand kit: 60ms
+      ease: MOTION.ease.emphatic,
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse'
+      },
+      delay: index * 0.1 // Stagger between elements
+    })
+  })
+}
+
+// ===== BRAND KIT: GRAINY AURA CURSOR =====
+function initGrainyCursor() {
+  // Only on desktop devices with fine pointer
+  if (window.matchMedia('(pointer: coarse)').matches) return
+
+  const cursor = document.createElement('div')
+  cursor.className = 'grainy-cursor'
+  cursor.innerHTML = `
+    <div class="cursor-glow"></div>
+    <div class="cursor-noise"></div>
+  `
+  document.body.appendChild(cursor)
+
+  // Create quickTo for smooth movement
+  const xTo = gsap.quickTo(cursor, 'x', { duration: 0.1, ease: 'none' })
+  const yTo = gsap.quickTo(cursor, 'y', { duration: 0.1, ease: 'none' })
+
+  document.addEventListener('mousemove', (e) => {
+    xTo(e.clientX - 128)
+    yTo(e.clientY - 128)
+  })
+
+  // Hide when leaving window
+  document.addEventListener('mouseleave', () => {
+    gsap.to(cursor, {
+      opacity: 0,
+      duration: MOTION.duration.fast
+    })
+  })
+
+  document.addEventListener('mouseenter', () => {
+    gsap.to(cursor, {
+      opacity: 0.6,
+      duration: MOTION.duration.fast
+    })
+  })
+}
+
+// ===== BRAND KIT: MAGNETIC BADGE EFFECTS =====
+function initMagneticBadges() {
+  const badges = document.querySelectorAll('.magnetic-badge')
+  const strength = 0.5
+
+  badges.forEach(badge => {
+    badge.addEventListener('mousemove', (e) => {
+      const rect = badge.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      const centerY = rect.top + rect.height / 2
+
+      const distX = (e.clientX - centerX) * strength
+      const distY = (e.clientY - centerY) * strength
+
+      gsap.to(badge, {
+        x: distX,
+        y: distY,
+        duration: 0.1,
+        ease: MOTION.ease.primary
+      })
+    })
+
+    badge.addEventListener('mouseleave', () => {
+      gsap.to(badge, {
+        x: 0,
+        y: 0,
+        duration: MOTION.duration.default,
+        ease: 'elastic.out(1, 0.5)'
+      })
+    })
+
+    // Hover glow effect
+    badge.addEventListener('mouseenter', () => {
+      gsap.to(badge, {
+        backgroundColor: 'rgba(23, 247, 247, 0.2)',
+        borderColor: 'rgba(23, 247, 247, 0.6)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+
+    badge.addEventListener('mouseleave', () => {
+      gsap.to(badge, {
+        backgroundColor: 'rgba(23, 247, 247, 0.1)',
+        borderColor: 'rgba(23, 247, 247, 0.3)',
+        duration: MOTION.duration.fast,
+        ease: MOTION.ease.primary
+      })
+    })
+  })
+}
+
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   // Start Alpine
@@ -854,6 +1739,30 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize advanced Capabilities animations
   initCapabilitiesPinReveal()
   initTokenGeneration()
+
+  // Initialize GSAP-only hover handlers (Brand Kit)
+  initButtonHovers()
+  initNavLinkHovers()
+  initElectricLiftHovers()
+  initGrainyAuraHovers()
+  initFooterLinkHovers()
+  initCursorScale()
+  initMenuHamburgerAnimation()
+  initWorkCardTransitions()
+  initCapabilityIndicatorAnimations()
+  initDepthCardHovers()
+  initHeaderScrollBlur()
+
+  // Initialize Brand Kit v2.0 features
+  initTabNavigation()
+  initHoverCaptions()
+  initKineticGrid()
+  initGrainyCursor()
+  initMagneticBadges()
+
+  // Initialize Brand Kit Digital Visual Elements
+  initDymaxionGlobe()
+  initStaggeredReveal()
 })
 
 // Refresh ScrollTrigger on window resize

@@ -15,7 +15,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="./styles/main.css">
 </head>
-<body class="bg-white" data-barba="wrapper">
+<body class="bg-white grain-overlay" data-barba="wrapper">
 
   <!-- Preloader -->
   <div class="preloader fixed inset-0 z-[10000] bg-log-cabin flex items-center justify-center">
@@ -29,16 +29,42 @@
     </div>
   </div>
 
-  <!-- SVG Filter for Monochrome Images - Brand Kit -->
-  <svg class="absolute w-0 h-0">
+  <!-- SVG Filters - MlBrandKit Color Matrices -->
+  <svg class="absolute w-0 h-0" aria-hidden="true">
     <defs>
+      <!-- Log Cabin Filter - Monochrome with warm tint -->
       <filter id="log-cabin-filter" color-interpolation-filters="sRGB">
         <feColorMatrix type="matrix" values="
           0.83984375 0 0 0 0.0078125
-          0 0.8515625 0 0 0.00390625
-          0 0 0.87109375 0 0.00390625
+          0.8515625 0 0 0 0.00390625
+          0.87109375 0 0 0 0.00390625
           0 0 0 1 0
         "/>
+      </filter>
+
+      <!-- Cyan Tone Filter - Cool spectral tint -->
+      <filter id="cyan-filter" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.828125 0 0 0 0
+          -0.078125 0 0 0 0.9375
+          -0.12890625 0 0 0 0.99609375
+          0 0 0 1 0
+        "/>
+      </filter>
+
+      <!-- Warm Tone Filter - Warm spectral tint -->
+      <filter id="warm-filter" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="
+          0.9609375 0 0 0 0.03515625
+          0.95703125 0 0 0 0.0390625
+          0.9609375 0 0 0 0.03515625
+          0 0 0 1 0
+        "/>
+      </filter>
+
+      <!-- Noise Filter for Grain Texture -->
+      <filter id="noise-filter" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
       </filter>
     </defs>
   </svg>
@@ -54,11 +80,11 @@
     <rect class="js-enter-mask" width="100%" height="100%" fill="#171717" mask="url(#circle-reveal-mask)"/>
   </svg>
 
-  <!-- Custom Cursor -->
+  <!-- Custom Cursor - GSAP handles scale transitions -->
   <div
     x-data="cursor"
     x-ref="cursor"
-    class="pointer-events-none fixed z-50 rounded-full transition-transform duration-300 items-center justify-center hidden pointer-fine:flex bg-mint text-grey-900 w-24 h-24 lg:w-32 lg:h-32"
+    class="custom-cursor pointer-events-none fixed z-50 rounded-full items-center justify-center hidden pointer-fine:flex bg-mint text-grey-900 w-24 h-24 lg:w-32 lg:h-32"
     :class="{ 'scale-100': active, 'scale-0': !active }"
     style="transform: scale(0);"
   >
@@ -81,42 +107,42 @@
             >
           </a>
 
-          <!-- Desktop Nav Links -->
+          <!-- Desktop Nav Links - GSAP handles hover transitions -->
           <div class="hidden lg:flex items-center gap-8">
-            <a href="#services" class="text-[13px] font-medium text-white/80 hover:text-white transition-colors">Capabilities</a>
-            <a href="#work" class="relative text-[13px] font-medium text-white/80 hover:text-white transition-colors">
+            <a href="#services" class="nav-link text-[13px] font-medium text-white/80" data-hover-color="white">Capabilities</a>
+            <a href="#work" class="nav-link relative text-[13px] font-medium text-white/80" data-hover-color="white">
               Work
               <span class="absolute -top-0.5 -right-2 w-1.5 h-1.5 bg-mint rounded-full"></span>
             </a>
-            <a href="#how-we-work" class="text-[13px] font-medium text-white/80 hover:text-white transition-colors">The Blueprint</a>
-            <a href="#about" class="text-[13px] font-medium text-white/80 hover:text-white transition-colors">About</a>
-            <a href="#contact" class="magnetic ml-4 px-5 py-2.5 bg-mint text-grey-900 text-[12px] font-semibold rounded-full hover:bg-mint/90 transition-colors flex items-center gap-1">
+            <a href="#how-we-work" class="nav-link text-[13px] font-medium text-white/80" data-hover-color="white">The Blueprint</a>
+            <a href="#about" class="nav-link text-[13px] font-medium text-white/80" data-hover-color="white">About</a>
+            <a href="#contact" class="magnetic btn-primary ml-4 px-5 py-2.5 text-[12px] font-semibold flex items-center gap-1">
               Book a Working Session <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
             </a>
           </div>
 
-          <!-- Menu Toggle -->
+          <!-- Menu Toggle - GSAP handles hamburger animation -->
           <button
             @click="toggleMenu()"
-            class="relative z-50 flex flex-col gap-1.5 p-2 lg:hidden text-white"
+            class="menu-toggle relative z-50 flex flex-col gap-1.5 p-2 lg:hidden text-white"
           >
             <div class="flex w-5 h-2 flex-col items-start justify-between">
-              <span class="w-full h-px bg-current transition-transform duration-500" :class="menuOpen ? 'rotate-45 translate-y-1' : ''"></span>
-              <span class="w-full h-px bg-current transition-transform duration-500" :class="menuOpen ? '-rotate-45 -translate-y-1' : ''"></span>
+              <span class="menu-line-top w-full h-px bg-current"></span>
+              <span class="menu-line-bottom w-full h-px bg-current"></span>
             </div>
           </button>
         </nav>
       </div>
 
-      <!-- Mobile Menu -->
+      <!-- Mobile Menu - GSAP handles all transitions -->
       <div class="menu-overlay fixed inset-0 bg-grey-900 z-40 opacity-0 pointer-events-none" :class="menuOpen ? 'pointer-events-auto' : ''">
         <div class="h-full flex flex-col justify-center px-6 py-20">
           <nav class="space-y-4">
-            <a href="#services" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white hover:text-mint transition-colors">Capabilities</a>
-            <a href="#work" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white hover:text-mint transition-colors">Work</a>
-            <a href="#how-we-work" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white hover:text-mint transition-colors">The Blueprint</a>
-            <a href="#about" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white hover:text-mint transition-colors">About</a>
-            <a href="#contact" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white hover:text-mint transition-colors">Book a Call</a>
+            <a href="#services" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white" data-hover-color="mint">Capabilities</a>
+            <a href="#work" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white" data-hover-color="mint">Work</a>
+            <a href="#how-we-work" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white" data-hover-color="mint">The Blueprint</a>
+            <a href="#about" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white" data-hover-color="mint">About</a>
+            <a href="#contact" @click="toggleMenu()" class="menu-link block text-4xl font-bold text-white" data-hover-color="mint">Book a Call</a>
           </nav>
         </div>
       </div>
@@ -129,17 +155,17 @@
         <img
           src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80"
           alt="Hero background"
-          class="w-full h-full object-cover filter-monochrome"
+          class="w-full h-full object-cover filter-deep"
         >
         <div class="absolute inset-0 bg-gradient-to-br from-grey-900/90 via-grey-900/80 to-grey-900/95"></div>
       </div>
 
-      <!-- Top Badges -->
+      <!-- Top Badges - Magnetic Effect -->
       <div class="relative z-10 text-center pt-16">
         <div class="flex justify-center items-center gap-4 flex-wrap">
-          <span class="hero-badge px-3 py-1.5 bg-white/10 rounded-full text-[10px] text-white/70 font-medium">Metric-Obsessed</span>
-          <span class="hero-badge px-3 py-1.5 bg-white/10 rounded-full text-[10px] text-white/70 font-medium">Zero Bloat</span>
-          <span class="hero-badge px-3 py-1.5 bg-white/10 rounded-full text-[10px] text-white/70 font-medium">100% IP Ownership</span>
+          <span class="magnetic-badge hero-badge">Metric-Obsessed</span>
+          <span class="magnetic-badge hero-badge">Zero Bloat</span>
+          <span class="magnetic-badge hero-badge">100% IP Ownership</span>
         </div>
       </div>
 
@@ -155,10 +181,10 @@
           Come to us when you have a problem worth solving. We'll figure out the build together.
         </p>
         <div class="flex justify-center gap-4 mt-8">
-          <a href="#work" class="magnetic hero-cta-btn px-5 py-2.5 bg-mint text-grey-900 text-[12px] font-semibold rounded-full hover:bg-mint/90 transition-colors flex items-center gap-1">
+          <a href="#work" class="magnetic btn-primary hero-cta-btn px-5 py-2.5 text-[12px] font-semibold flex items-center gap-1">
             See The Work <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
           </a>
-          <a href="#how-we-work" class="magnetic hero-cta-btn px-5 py-2.5 border border-white/30 text-white text-[12px] font-medium rounded-full hover:bg-white/10 transition-colors flex items-center gap-1">
+          <a href="#how-we-work" class="magnetic btn-secondary hero-cta-btn px-5 py-2.5 text-[12px] font-medium flex items-center gap-1">
             How We Work <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
           </a>
         </div>
@@ -201,9 +227,14 @@
       </div>
     </section>
 
-    <!-- About Section -->
-    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white" id="about">
-      <div class="max-w-[1200px] mx-auto">
+    <!-- About Section - Good Partners, Good Software -->
+    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white relative overflow-hidden" id="about">
+      <!-- Kinetic Grid Background -->
+      <div class="kinetic-grid-container opacity-30">
+        <canvas id="kinetic-grid"></canvas>
+      </div>
+
+      <div class="max-w-[1200px] mx-auto relative z-10">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <!-- Left Text -->
           <div>
@@ -218,14 +249,14 @@
           <!-- Right Side -->
           <div>
             <h2 class="text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] leading-[1.05] text-grey-900 mb-8">
-              Good Partners,<br>Good Software <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded align-middle"></span>
+              Good Partners,<br>Good Software <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded-none align-middle"></span>
             </h2>
 
             <div class="flex items-center gap-6">
-              <a href="#services" class="px-5 py-2.5 border border-grey-900 text-grey-900 text-[12px] font-medium rounded-full hover:bg-grey-900 hover:text-white transition-colors flex items-center gap-1">
+              <a href="#services" class="btn-outline-dark px-5 py-2.5 border border-grey-900 text-grey-900 text-[12px] font-medium rounded-none flex items-center gap-1">
                 Our Capabilities <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
               </a>
-              <a href="#work" class="text-[12px] font-medium text-grey-900 hover:text-grey-600 transition-colors flex items-center gap-1">
+              <a href="#work" class="text-link text-[12px] font-medium text-grey-900 flex items-center gap-1">
                 See Our Work <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
               </a>
             </div>
@@ -235,100 +266,124 @@
     </section>
 
     <!-- Selected Work Section -->
-    <section class="py-20 px-4 md:px-8 lg:px-12 bg-grey-900 rounded-t-3xl" id="work" x-data="{ activeCase: 0 }">
-      <div class="max-w-[1200px] mx-auto">
-        <p class="text-[11px] text-white/50 mb-10 tracking-wide">Selected Work</p>
+    <section class="py-20 px-4 md:px-8 lg:px-12 bg-grey-900 relative overflow-hidden" id="work" x-data="{ activeCase: 0 }">
+      <div class="max-w-[1200px] mx-auto relative z-10">
+        <!-- Cyan Accent Divider -->
+        <div class="cyan-divider mb-6">
+          <div class="cyan-divider-line"></div>
+          <span class="cyan-divider-label">Selected Work</span>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav mb-10">
+          <button class="tab-trigger active">All Projects</button>
+          <button class="tab-trigger">AI & Automation</button>
+          <button class="tab-trigger">Web & Apps</button>
+          <button class="tab-trigger">GTM & Sales</button>
+          <div class="tab-underline"></div>
+        </div>
 
         <div class="grid lg:grid-cols-2 gap-8 lg:gap-16">
-          <!-- Left - Case Studies List -->
+          <!-- Left - Case Studies List - GSAP handles color transitions -->
           <div class="space-y-2">
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 0 ? 'text-white' : 'text-white/30 hover:text-white/60'"
-               @mouseenter="activeCase = 0">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 0 ? 'text-white' : 'text-white/30'"
+               @mouseenter="activeCase = 0" data-index="0">
               Perhitsiksha <span class="text-[10px] font-normal ml-1 text-mint">Website, CRM, Sales</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 1 ? 'text-white' : 'text-white/30 hover:text-white/60'"
-               @mouseenter="activeCase = 1">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 1 ? 'text-white' : 'text-white/30'"
+               @mouseenter="activeCase = 1" data-index="1">
               White Space Studio <span class="text-[10px] font-normal ml-1">AI Automation</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 2 ? 'text-white' : 'text-white/25 hover:text-white/60'"
-               @mouseenter="activeCase = 2">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 2 ? 'text-white' : 'text-white/25'"
+               @mouseenter="activeCase = 2" data-index="2">
               CargoSphere <span class="text-[10px] font-normal ml-1">GTM & Website</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 3 ? 'text-white' : 'text-white/20 hover:text-white/60'"
-               @mouseenter="activeCase = 3">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 3 ? 'text-white' : 'text-white/20'"
+               @mouseenter="activeCase = 3" data-index="3">
               TMEN Systems <span class="text-[10px] font-normal ml-1">Sales Enablement</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 4 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 4">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 4 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 4" data-index="4">
               Cargomen <span class="text-[10px] font-normal ml-1">ERP Automation</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 5 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 5">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 5 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 5" data-index="5">
               Alamirap Nutrition <span class="text-[10px] font-normal ml-1">Lead Funnels</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 6 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 6">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 6 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 6" data-index="6">
               JB Singh & Sons <span class="text-[10px] font-normal ml-1">Website + AI</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 7 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 7">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 7 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 7" data-index="7">
               Numbers <span class="text-[10px] font-normal ml-1">Learning App</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 8 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 8">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 8 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 8" data-index="8">
               Birdsong <span class="text-[10px] font-normal ml-1">Mobile App</span>
             </p>
-            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-300"
-               :class="activeCase === 9 ? 'text-white' : 'text-white/15 hover:text-white/60'"
-               @mouseenter="activeCase = 9">
+            <p class="work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer"
+               :class="activeCase === 9 ? 'text-white' : 'text-white/15'"
+               @mouseenter="activeCase = 9" data-index="9">
               Troupex <span class="text-[9px] font-normal ml-1 text-white/50">Coming Soon</span>
             </p>
           </div>
 
-          <!-- Right - Featured Cards Stack -->
+          <!-- Right - Featured Cards Stack - GSAP handles card transitions -->
           <div class="space-y-4">
             <!-- Perhitsiksha Card -->
-            <div x-show="activeCase === 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Website and CRM" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 0" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="0" data-hover-caption>
+              <span class="hover-caption">Case Study</span>
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" alt="Website and CRM" class="reveal-image absolute inset-0 w-full h-full object-cover filter-cool">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
                   Website, tailor-made<br>workflows, CRM automation
                 </h3>
+                <!-- Image Caption -->
+                <div class="image-caption">
+                  <span class="image-caption-title">Perhitsiksha</span>
+                  <span class="image-caption-meta">Education Platform • 2024</span>
+                </div>
               </div>
-              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-2">
+              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-none px-3 py-1.5 flex items-center gap-2">
                 <i class="fa-solid fa-robot text-grey-600 text-[10px]"></i>
                 <span class="text-[10px] text-grey-900 font-medium">Full Stack</span>
               </div>
             </div>
 
             <!-- White Space Card -->
-            <div x-show="activeCase === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Architecture AI" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 1" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="1" data-hover-caption>
+              <span class="hover-caption">Case Study</span>
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Architecture AI" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
                   AI automation for<br>project costing & docs
                 </h3>
+                <div class="image-caption">
+                  <span class="image-caption-title">White Space Studio</span>
+                  <span class="image-caption-meta">Architecture • AI Automation</span>
+                </div>
               </div>
-              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-2">
+              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-none px-3 py-1.5 flex items-center gap-2">
                 <i class="fa-solid fa-building text-grey-600 text-[10px]"></i>
                 <span class="text-[10px] text-grey-900 font-medium">Architecture</span>
               </div>
             </div>
 
             <!-- CargoSphere Card -->
-            <div x-show="activeCase === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80" alt="Cargo Tech" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 2" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="2">
+              <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800&q=80" alt="Cargo Tech" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -338,8 +393,8 @@
             </div>
 
             <!-- TMEN Card -->
-            <div x-show="activeCase === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Sales Team" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 3" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="3">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80" alt="Sales Team" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -349,8 +404,8 @@
             </div>
 
             <!-- Cargomen Card -->
-            <div x-show="activeCase === 4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Dashboard Analytics" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 4" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="4">
+              <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Dashboard Analytics" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -360,8 +415,8 @@
             </div>
 
             <!-- Alamirap Card -->
-            <div x-show="activeCase === 5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80" alt="Marketing Funnel" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 5" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="5">
+              <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80" alt="Marketing Funnel" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -371,8 +426,8 @@
             </div>
 
             <!-- JB Singh Card -->
-            <div x-show="activeCase === 6" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" alt="Website Development" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 6" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="6">
+              <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" alt="Website Development" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -382,8 +437,8 @@
             </div>
 
             <!-- Numbers App Card -->
-            <div x-show="activeCase === 7" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=800&q=80" alt="Learning App" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 7" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="7">
+              <img src="https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=800&q=80" alt="Learning App" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
@@ -393,30 +448,30 @@
             </div>
 
             <!-- Birdsong Card -->
-            <div x-show="activeCase === 8" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800&q=80" alt="Birdsong App" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 8" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="8">
+              <img src="https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800&q=80" alt="Birdsong App" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
                   Location-aware birding app;<br>collect birds by listening
                 </h3>
               </div>
-              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-2">
+              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-none px-3 py-1.5 flex items-center gap-2">
                 <i class="fa-solid fa-mobile-screen text-grey-600 text-[10px]"></i>
                 <span class="text-[10px] text-grey-900 font-medium">Mobile App</span>
               </div>
             </div>
 
             <!-- Troupex Card -->
-            <div x-show="activeCase === 9" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="relative aspect-[4/3] rounded-2xl overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800&q=80" alt="Troupex" class="reveal-image absolute inset-0 w-full h-full object-cover filter-monochrome">
+            <div x-show="activeCase === 9" class="work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden" data-card-index="9">
+              <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800&q=80" alt="Troupex" class="reveal-image absolute inset-0 w-full h-full object-cover filter-standard">
               <div class="absolute inset-0 bg-gradient-to-t from-log-cabin/80 to-transparent"></div>
               <div class="relative h-full p-6 flex flex-col justify-end">
                 <h3 class="text-[22px] md:text-[26px] font-bold text-white leading-tight">
                   Social network for<br>entertainment professionals
                 </h3>
               </div>
-              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-2">
+              <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-none px-3 py-1.5 flex items-center gap-2">
                 <i class="fa-solid fa-clock text-grey-600 text-[10px]"></i>
                 <span class="text-[10px] text-grey-900 font-medium">Coming Soon</span>
               </div>
@@ -428,13 +483,18 @@
 
 
     <!-- Capabilities Section - Pin and Reveal -->
-    <section class="capabilities-section py-20 px-4 md:px-8 lg:px-12 bg-grey-900" id="services">
-      <div class="capabilities-wrapper">
+    <section class="capabilities-section py-20 px-4 md:px-8 lg:px-12 bg-grey-900 relative overflow-hidden" id="services">
+      <div class="capabilities-wrapper relative z-10">
         <!-- LEFT: Pinned Title & Navigation -->
         <div class="capabilities-left">
           <div class="capabilities-left-content">
-            <h2 class="text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] text-white mb-8">
-              Our <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded align-middle"></span> Capabilities
+            <!-- Cyan Accent Divider -->
+            <div class="cyan-divider mb-6">
+              <div class="cyan-divider-line"></div>
+              <span class="cyan-divider-label">What We Do</span>
+            </div>
+            <h2 class="cyan-accent-left text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] text-white mb-8">
+              Our Capabilities
             </h2>
             <!-- Category indicators -->
             <div class="capability-indicators hidden lg:block">
@@ -461,7 +521,7 @@
         <!-- RIGHT: Scrolling Cards -->
         <div class="capabilities-right">
           <!-- AUTOMATE -->
-          <div class="capability-card p-8 md:p-10 bg-grey-800 rounded-2xl" data-index="0">
+          <div class="capability-card depth-card p-8 md:p-10 bg-grey-800 rounded-none" data-index="0">
             <h3 class="text-[24px] md:text-[28px] font-bold text-white mb-4">AUTOMATE with Intelligent Workflows</h3>
             <p class="token-reveal text-[14px] md:text-[15px] text-white/70 mb-6 leading-relaxed">We tuck LLMs and autonomous agents into the tools you already use so the busywork runs itself and your team focuses on the work that needs judgment.</p>
             <ul class="space-y-3 text-[13px] text-white/80">
@@ -473,7 +533,7 @@
           </div>
 
           <!-- BUILD -->
-          <div class="capability-card p-8 md:p-10 bg-grey-800 rounded-2xl" data-index="1">
+          <div class="capability-card depth-card p-8 md:p-10 bg-grey-800 rounded-none" data-index="1">
             <h3 class="text-[24px] md:text-[28px] font-bold text-white mb-4">BUILD AI-Native Products</h3>
             <p class="token-reveal text-[14px] md:text-[15px] text-white/70 mb-6 leading-relaxed">Go from "I have an idea" to people actually using it. We build web and mobile apps with AI woven into the experience. Not bolted on as a gimmick.</p>
             <ul class="space-y-3 text-[13px] text-white/80">
@@ -485,7 +545,7 @@
           </div>
 
           <!-- SCALE -->
-          <div class="capability-card p-8 md:p-10 bg-grey-800 rounded-2xl" data-index="2">
+          <div class="capability-card depth-card p-8 md:p-10 bg-grey-800 rounded-none" data-index="2">
             <h3 class="text-[24px] md:text-[28px] font-bold text-white mb-4">SCALE with GTM & Revenue Systems</h3>
             <p class="token-reveal text-[14px] md:text-[15px] text-white/70 mb-6 leading-relaxed">Scale your sales engine without scaling headcount. We automate the path from lead to closed-won and make your funnel actually visible.</p>
             <ul class="space-y-3 text-[13px] text-white/80">
@@ -497,7 +557,7 @@
           </div>
 
           <!-- CONVERT -->
-          <div class="capability-card p-8 md:p-10 bg-grey-800 rounded-2xl" data-index="3">
+          <div class="capability-card depth-card p-8 md:p-10 bg-grey-800 rounded-none" data-index="3">
             <h3 class="text-[24px] md:text-[28px] font-bold text-white mb-4">CONVERT with AI-Assisted Web & Brand Systems</h3>
             <p class="token-reveal text-[14px] md:text-[15px] text-white/70 mb-6 leading-relaxed">We build websites and brand systems that actually pull their weight: clear story, clean UX, and content that keeps up as you grow.</p>
             <ul class="space-y-3 text-[13px] text-white/80">
@@ -510,16 +570,50 @@
       </div>
     </section>
 
+    <!-- Client Marquee Section - Infinite Fast Scroll -->
+    <section class="py-8 bg-grey-900 border-y border-white/10 overflow-hidden">
+      <div class="client-marquee-wrapper">
+        <div class="client-marquee">
+          <span class="client-marquee-item">Perhitsiksha</span>
+          <span class="client-marquee-item">White Space Studio</span>
+          <span class="client-marquee-item">CargoSphere</span>
+          <span class="client-marquee-item">TMEN Systems</span>
+          <span class="client-marquee-item">Cargomen</span>
+          <span class="client-marquee-item">Alamirap Nutrition</span>
+          <span class="client-marquee-item">JB Singh & Sons</span>
+          <span class="client-marquee-item">Numbers App</span>
+          <span class="client-marquee-item">Birdsong</span>
+          <span class="client-marquee-item">Troupex</span>
+          <!-- Duplicate for seamless loop -->
+          <span class="client-marquee-item">Perhitsiksha</span>
+          <span class="client-marquee-item">White Space Studio</span>
+          <span class="client-marquee-item">CargoSphere</span>
+          <span class="client-marquee-item">TMEN Systems</span>
+          <span class="client-marquee-item">Cargomen</span>
+          <span class="client-marquee-item">Alamirap Nutrition</span>
+          <span class="client-marquee-item">JB Singh & Sons</span>
+          <span class="client-marquee-item">Numbers App</span>
+          <span class="client-marquee-item">Birdsong</span>
+          <span class="client-marquee-item">Troupex</span>
+        </div>
+      </div>
+    </section>
+
     <!-- How We Work Section -->
-    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white rounded-t-3xl" id="how-we-work">
+    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white" id="how-we-work">
       <div class="max-w-[1200px] mx-auto">
+        <!-- Cyan Accent Divider -->
+        <div class="cyan-divider mb-6 justify-center">
+          <div class="cyan-divider-line bg-[#090909]"></div>
+          <span class="cyan-divider-label text-grey-500">The Blueprint</span>
+        </div>
         <h2 class="text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] text-grey-900 mb-12 text-center">
-          How We <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded align-middle"></span> Work
+          How We Work
         </h2>
 
         <div class="grid md:grid-cols-2 gap-8">
           <!-- Step 1 -->
-          <div class="how-we-work-card p-6 md:p-8 bg-white rounded-2xl shadow-sm">
+          <div class="how-we-work-card electric-lift grainy-aura p-6 md:p-8 bg-white rounded-none border border-grey-200">
             <div class="flex items-center gap-3 mb-4">
               <i class="fa-solid fa-comments text-mint text-xl"></i>
               <h3 class="text-[20px] font-bold text-grey-900">Talk → Touch</h3>
@@ -530,7 +624,7 @@
           </div>
 
           <!-- Step 2 -->
-          <div class="how-we-work-card p-6 md:p-8 bg-white rounded-2xl shadow-sm">
+          <div class="how-we-work-card electric-lift grainy-aura p-6 md:p-8 bg-white rounded-none border border-grey-200">
             <div class="flex items-center gap-3 mb-4">
               <i class="fa-solid fa-chart-line text-mint text-xl"></i>
               <h3 class="text-[20px] font-bold text-grey-900">Evidence → Ship</h3>
@@ -544,44 +638,49 @@
     </section>
 
     <!-- Why Teams Choose Us -->
-    <section class="py-20 px-4 md:px-8 lg:px-12 bg-grey-900">
-      <div class="max-w-[1200px] mx-auto">
+    <section class="py-20 px-4 md:px-8 lg:px-12 bg-grey-900 relative overflow-hidden">
+      <div class="max-w-[1200px] mx-auto relative z-10">
+        <!-- Cyan Accent Divider -->
+        <div class="cyan-divider mb-6 justify-center">
+          <div class="cyan-divider-line"></div>
+          <span class="cyan-divider-label">Why Us</span>
+        </div>
         <h2 class="text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] text-white mb-12 text-center">
-          Why Teams Choose <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded align-middle"></span> Us
+          Why Teams Choose Us
         </h2>
 
         <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-arrows-rotate text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">Small team, real partnership</h3>
             <p class="text-[11px] text-white/70">You work with us directly. No layers, no runaround.</p>
           </div>
 
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-hammer text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">Built for your workflow</h3>
             <p class="text-[11px] text-white/70">Everything we build fits how your team already operates: tools, rituals, constraints.</p>
           </div>
 
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-bullseye text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">Metric-first delivery</h3>
             <p class="text-[11px] text-white/70">We don't sell features. We solve problems.</p>
           </div>
 
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-window-maximize text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">Production, not prototypes</h3>
             <p class="text-[11px] text-white/70">We stay through evaluations, rollout, and reliability so the system is actually used.</p>
           </div>
 
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-robot text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">AI where it counts</h3>
             <p class="text-[11px] text-white/70">We use LLMs and agents only where they reduce cost, time, or complexity. Nowhere else.</p>
           </div>
 
-          <div class="why-item text-center p-4">
+          <div class="why-item grainy-aura electric-lift text-center p-4 rounded-none">
             <i class="fa-solid fa-users text-mint text-2xl mb-3"></i>
             <h3 class="text-[14px] font-bold text-white mb-2">A tech team for non-technical teams</h3>
             <p class="text-[11px] text-white/70">Most of our clients are strong in ops or marketing, not engineering. We handle "everything tech" so you can focus on the business.</p>
@@ -591,15 +690,20 @@
     </section>
 
     <!-- The Fine Print Section -->
-    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white rounded-t-3xl">
+    <section class="py-20 px-4 md:px-8 lg:px-12 bg-white">
       <div class="max-w-[1200px] mx-auto">
+        <!-- Cyan Accent Divider -->
+        <div class="cyan-divider mb-6 justify-center">
+          <div class="cyan-divider-line bg-[#090909]"></div>
+          <span class="cyan-divider-label text-grey-500">Details</span>
+        </div>
         <h2 class="text-[32px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.03em] text-grey-900 mb-12 text-center">
-          The Fine <span class="inline-block w-8 md:w-10 h-6 md:h-8 bg-mint/40 rounded align-middle"></span> Print
+          The Fine Print
         </h2>
 
         <div class="grid md:grid-cols-3 gap-8">
           <!-- Pricing -->
-          <div class="fine-print-card p-6 md:p-8 bg-white rounded-2xl shadow-sm">
+          <div class="fine-print-card electric-lift grainy-aura p-6 md:p-8 bg-white rounded-none border border-grey-200">
             <h3 class="text-[18px] font-bold text-grey-900 mb-3">Pricing</h3>
             <p class="text-[13px] text-grey-600 leading-relaxed mb-3">
               After our first chat, you get a fixed-price proposal. Clear investment, clear return.
@@ -610,7 +714,7 @@
           </div>
 
           <!-- Timeline -->
-          <div class="fine-print-card p-6 md:p-8 bg-white rounded-2xl shadow-sm">
+          <div class="fine-print-card electric-lift grainy-aura p-6 md:p-8 bg-white rounded-none border border-grey-200">
             <h3 class="text-[18px] font-bold text-grey-900 mb-3">Timeline</h3>
             <p class="text-[13px] text-grey-600 leading-relaxed">
               <strong>Small tools:</strong> 1–2 weeks<br>
@@ -619,7 +723,7 @@
           </div>
 
           <!-- Product Ownership -->
-          <div class="fine-print-card p-6 md:p-8 bg-white rounded-2xl shadow-sm">
+          <div class="fine-print-card electric-lift grainy-aura p-6 md:p-8 bg-white rounded-none border border-grey-200">
             <h3 class="text-[18px] font-bold text-grey-900 mb-3">Product Ownership</h3>
             <p class="text-[13px] text-grey-600 leading-relaxed">
               <strong>Who owns the code?</strong> You do. We're here as long as we're useful.
@@ -630,70 +734,84 @@
     </section>
 
     <!-- Ready To Build Section -->
-    <section class="py-24 px-4 md:px-8 lg:px-12 bg-grey-900" id="contact">
-      <div class="max-w-[1200px] mx-auto text-center">
+    <section class="py-24 px-4 md:px-8 lg:px-12 bg-grey-900 relative overflow-hidden" id="contact">
+      <div class="max-w-[1200px] mx-auto text-center relative z-10">
+        <!-- Cyan Accent Divider -->
+        <div class="cyan-divider mb-8 justify-center">
+          <div class="cyan-divider-line"></div>
+          <span class="cyan-divider-label">Let's Talk</span>
+        </div>
         <h2 class="cta-headline text-[40px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.03em] text-white mb-6">
           Got something you want to build?
         </h2>
         <p class="text-[14px] text-white/70 mb-8">
           Let's talk. Bring a napkin sketch, a half-baked idea, or a full brief. We'll figure it out together.
         </p>
-        <a href="mailto:damini@materiallab.io" class="magnetic inline-flex px-6 py-3 bg-mint text-grey-900 text-[14px] font-semibold rounded-full hover:bg-mint/90 transition-colors items-center gap-2">
+        <a href="mailto:damini@materiallab.io" class="magnetic btn-primary inline-flex px-6 py-3 text-[14px] font-semibold items-center gap-2">
           Start a conversation <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
         </a>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-16 px-4 md:px-8 lg:px-12 bg-grey-900">
-      <div class="max-w-[1200px] mx-auto">
+    <footer class="py-16 px-4 md:px-8 lg:px-12 bg-grey-900 relative overflow-hidden">
+      <!-- Globe Background -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="dymaxion-container relative">
+          <canvas id="dymaxion-globe" class="dymaxion-globe"></canvas>
+          <div class="jewel-glow"></div>
+        </div>
+      </div>
+
+      <!-- Footer Content -->
+      <div class="max-w-[1200px] mx-auto relative z-10">
         <div class="grid md:grid-cols-3 gap-8 lg:gap-12 mb-20">
-          <!-- Contact & Socials -->
+          <!-- Contact & Socials - GSAP handles hover transitions -->
           <div>
             <h4 class="text-[16px] md:text-[18px] font-medium text-white mb-6">Get in touch</h4>
-            <a href="mailto:damini@materiallab.io" class="text-[14px] text-mint hover:text-mint/80 transition-colors block mb-4">
+            <a href="mailto:damini@materiallab.io" class="footer-link text-[14px] text-mint block mb-4">
               damini@materiallab.io
             </a>
             <div class="flex gap-3 mt-5">
-              <a href="http://wa.me/918050131733" class="flex items-center gap-0.5 text-white/60 hover:text-mint transition-colors text-[12px]">
+              <a href="http://wa.me/918050131733" class="social-link flex items-center gap-0.5 text-white/60 text-[12px]" data-hover-color="mint">
                 <i class="fa-brands fa-whatsapp"></i>
                 <i class="fa-solid fa-arrow-up-right text-[7px]"></i>
               </a>
-              <a href="https://www.linkedin.com/company/material-lab-io/" class="flex items-center gap-0.5 text-white/60 hover:text-mint transition-colors text-[12px]">
+              <a href="https://www.linkedin.com/company/material-lab-io/" class="social-link flex items-center gap-0.5 text-white/60 text-[12px]" data-hover-color="mint">
                 <i class="fa-brands fa-linkedin-in"></i>
                 <i class="fa-solid fa-arrow-up-right text-[7px]"></i>
               </a>
-              <a href="https://x.com/kaushiknaarayan" class="flex items-center gap-0.5 text-white/60 hover:text-mint transition-colors text-[12px]">
+              <a href="https://x.com/kaushiknaarayan" class="social-link flex items-center gap-0.5 text-white/60 text-[12px]" data-hover-color="mint">
                 <i class="fa-brands fa-x-twitter"></i>
                 <i class="fa-solid fa-arrow-up-right text-[7px]"></i>
               </a>
-              <a href="https://github.com/material-lab-io" class="flex items-center gap-0.5 text-white/60 hover:text-mint transition-colors text-[12px]">
+              <a href="https://github.com/material-lab-io" class="social-link flex items-center gap-0.5 text-white/60 text-[12px]" data-hover-color="mint">
                 <i class="fa-brands fa-github"></i>
                 <i class="fa-solid fa-arrow-up-right text-[7px]"></i>
               </a>
-              <a href="https://blog.kaushiknaarayan.me/" class="flex items-center gap-0.5 text-white/60 hover:text-mint transition-colors text-[12px]">
+              <a href="https://blog.kaushiknaarayan.me/" class="social-link flex items-center gap-0.5 text-white/60 text-[12px]" data-hover-color="mint">
                 <i class="fa-solid fa-blog"></i>
                 <i class="fa-solid fa-arrow-up-right text-[7px]"></i>
               </a>
             </div>
           </div>
 
-          <!-- Navigation -->
+          <!-- Navigation - GSAP handles hover transitions -->
           <div>
             <ul class="space-y-3 text-[14px] text-white/80">
-              <li><a href="#services" class="hover:text-mint transition-colors">Capabilities</a></li>
-              <li><a href="#work" class="hover:text-mint transition-colors">Work</a></li>
-              <li><a href="#how-we-work" class="hover:text-mint transition-colors">The Blueprint</a></li>
-              <li><a href="#about" class="hover:text-mint transition-colors">About</a></li>
+              <li><a href="#services" class="footer-nav-link" data-hover-color="mint">Capabilities</a></li>
+              <li><a href="#work" class="footer-nav-link" data-hover-color="mint">Work</a></li>
+              <li><a href="#how-we-work" class="footer-nav-link" data-hover-color="mint">The Blueprint</a></li>
+              <li><a href="#about" class="footer-nav-link" data-hover-color="mint">About</a></li>
             </ul>
           </div>
 
-          <!-- Founders -->
+          <!-- Founders - GSAP handles hover transitions -->
           <div>
             <h4 class="text-[14px] font-medium text-white/60 mb-3">Founders</h4>
             <ul class="space-y-3 text-[14px] text-white/80">
-              <li><a href="https://www.linkedin.com/in/daminirathi" class="hover:text-mint transition-colors">Damini Rathi</a></li>
-              <li><a href="https://www.linkedin.com/in/kaushik-naarayan/" class="hover:text-mint transition-colors">Kaushik Naarayan</a></li>
+              <li><a href="https://www.linkedin.com/in/daminirathi" class="footer-nav-link" data-hover-color="mint">Damini Rathi</a></li>
+              <li><a href="https://www.linkedin.com/in/kaushik-naarayan/" class="footer-nav-link" data-hover-color="mint">Kaushik Naarayan</a></li>
             </ul>
           </div>
         </div>
