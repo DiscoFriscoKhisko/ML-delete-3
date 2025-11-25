@@ -548,6 +548,126 @@ function initImageLoadAnimations() {
   })
 }
 
+// ===== CAPABILITIES PIN AND REVEAL ANIMATION =====
+function initCapabilitiesPinReveal() {
+  const section = document.querySelector('.capabilities-section')
+  const wrapper = document.querySelector('.capabilities-wrapper')
+  const left = document.querySelector('.capabilities-left')
+  const right = document.querySelector('.capabilities-right')
+  const cards = document.querySelectorAll('.capabilities-right .capability-card')
+  const indicators = document.querySelectorAll('.capability-indicator')
+
+  if (!section || !wrapper || !left || !right || cards.length === 0) return
+
+  // Only apply pin on desktop
+  ScrollTrigger.matchMedia({
+    '(min-width: 1024px)': () => {
+      // Pin the left side while right side scrolls
+      ScrollTrigger.create({
+        trigger: wrapper,
+        start: 'top 80px', // Account for fixed header
+        end: () => `+=${right.offsetHeight - window.innerHeight + 160}`,
+        pin: left,
+        pinSpacing: false,
+        invalidateOnRefresh: true
+      })
+
+      // Update active indicator based on scroll position
+      cards.forEach((card, index) => {
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter: () => updateActiveIndicator(index),
+          onEnterBack: () => updateActiveIndicator(index)
+        })
+      })
+
+      // Card reveal animations with stagger
+      cards.forEach((card, i) => {
+        gsap.from(card, {
+          y: 80,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+      })
+    },
+    // Mobile - no pin, just card animations
+    '(max-width: 1023px)': () => {
+      cards.forEach((card, i) => {
+        gsap.from(card, {
+          y: 60,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          }
+        })
+      })
+    }
+  })
+
+  // Helper function to update active indicator
+  function updateActiveIndicator(activeIndex) {
+    indicators.forEach((indicator, index) => {
+      if (index === activeIndex) {
+        indicator.classList.add('active')
+      } else {
+        indicator.classList.remove('active')
+      }
+    })
+  }
+
+  // Click handlers for indicators
+  indicators.forEach(indicator => {
+    indicator.addEventListener('click', () => {
+      const targetIndex = parseInt(indicator.dataset.target)
+      const targetCard = cards[targetIndex]
+      if (targetCard) {
+        gsap.to(window, {
+          duration: 0.8,
+          scrollTo: { y: targetCard, offsetY: 100 },
+          ease: 'power3.inOut'
+        })
+      }
+    })
+  })
+}
+
+// ===== TOKEN GENERATION EFFECT (LLM-style text reveal) =====
+function initTokenGeneration() {
+  const tokenElements = document.querySelectorAll('.token-reveal')
+
+  if (tokenElements.length === 0) return
+
+  tokenElements.forEach(el => {
+    // Split text into characters
+    const split = new SplitText(el, { type: 'chars', charsClass: 'char' })
+
+    // Animate characters appearing one by one
+    gsap.from(split.chars, {
+      opacity: 0,
+      stagger: 0.015, // 15ms between characters - rapid typing feel
+      duration: 0.05,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 80%',
+        toggleActions: 'play none none none' // Play once, don't reverse
+      }
+    })
+  })
+}
+
 // Material Lab specific animations
 function initMaterialLabAnimations() {
   // Smooth scroll for anchor links
@@ -572,7 +692,7 @@ function initMaterialLabAnimations() {
       y: -30,
       opacity: 0,
       stagger: 0.1,
-      duration: 0.6,
+      duration: 0.7,
       delay: 1.5,
       ease: 'power3.out'
     })
@@ -582,30 +702,16 @@ function initMaterialLabAnimations() {
   const heroCtas = document.querySelectorAll('.hero-cta-btn')
   if (heroCtas.length) {
     gsap.from(heroCtas, {
-      scale: 0.8,
+      scale: 0.9,
       opacity: 0,
-      stagger: 0.15,
-      duration: 0.5,
+      stagger: 0.1,
+      duration: 0.6,
       delay: 2,
-      ease: 'back.out(1.7)'
+      ease: 'back.out(1.5)'
     })
   }
 
-  // Capability cards stagger animation
-  const capabilityCards = document.querySelectorAll('.capability-card')
-  if (capabilityCards.length) {
-    gsap.from(capabilityCards, {
-      y: 60,
-      opacity: 0,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: capabilityCards[0].parentElement,
-        start: 'top 75%'
-      }
-    })
-  }
+  // Capability cards animation is now handled by initCapabilitiesPinReveal()
 
   // Work items animation
   const workItems = document.querySelectorAll('.work-item')
@@ -613,8 +719,8 @@ function initMaterialLabAnimations() {
     gsap.from(workItems, {
       x: -30,
       opacity: 0,
-      stagger: 0.08,
-      duration: 0.6,
+      stagger: 0.1,
+      duration: 0.7,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: workItems[0].parentElement,
@@ -630,7 +736,7 @@ function initMaterialLabAnimations() {
       gsap.from(card, {
         x: i % 2 === 0 ? -50 : 50,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.7,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: card,
@@ -644,7 +750,7 @@ function initMaterialLabAnimations() {
   const whyItems = document.querySelectorAll('.why-item')
   if (whyItems.length) {
     gsap.from(whyItems, {
-      scale: 0.8,
+      scale: 0.9,
       opacity: 0,
       stagger: 0.1,
       duration: 0.6,
@@ -660,9 +766,9 @@ function initMaterialLabAnimations() {
   const finePrintCards = document.querySelectorAll('.fine-print-card')
   if (finePrintCards.length) {
     gsap.from(finePrintCards, {
-      y: 40,
+      y: 50,
       opacity: 0,
-      stagger: 0.12,
+      stagger: 0.1,
       duration: 0.7,
       ease: 'power3.out',
       scrollTrigger: {
@@ -695,7 +801,7 @@ function initMaterialLabAnimations() {
     gsap.from(footerLogo, {
       y: 50,
       opacity: 0,
-      duration: 1,
+      duration: 0.7,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: footerLogo,
@@ -744,6 +850,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initLineReveals()
   initImageReveals()
   initMagneticButtons()
+
+  // Initialize advanced Capabilities animations
+  initCapabilitiesPinReveal()
+  initTokenGeneration()
 })
 
 // Refresh ScrollTrigger on window resize

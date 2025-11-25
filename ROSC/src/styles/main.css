@@ -4,14 +4,20 @@
 /* Brand Kit Color Variables */
 :root {
   /* Primary Brand Colors */
-  --log-cabin: #090A09;
-  --mischka: #D6D6DE;
-  --white: #FFFFFF;
+  --black: #090909;
+  --white: #fefefe;
+  --cyan-glow: #17f7f7;
 
   /* Extended Palette */
-  --log-cabin-800: #1A1B1A;
-  --white-lilac: #F3F3F5;
+  --white-smoke: #f3f4f4;
+  --alabaster: #d5dada;
   --nickel: #737373;
+
+  /* Legacy aliases */
+  --log-cabin: #090909;
+  --log-cabin-800: #111111;
+  --mischka: #d5dada;
+  --white-lilac: #f3f4f4;
 }
 
 @tailwind base;
@@ -168,7 +174,7 @@
   }
 
   .bg-mint {
-    background-color: #00FFFF; /* Keep cyan for primary CTA buttons */
+    background-color: var(--cyan-glow); /* Cyan Glow #17f7f7 */
   }
 
   /* Additional brand utilities */
@@ -312,3 +318,116 @@
     -webkit-backdrop-filter: blur(8px);
   }
 }
+
+/* ===== CAPABILITIES PIN AND REVEAL SECTION ===== */
+@layer components {
+  .capabilities-section {
+    position: relative;
+  }
+
+  .capabilities-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Left side - will be pinned on desktop */
+  .capabilities-left {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .capabilities-left-content {
+    position: relative;
+  }
+
+  /* Right side - scrolling cards */
+  .capabilities-right {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Desktop layout */
+  @media (min-width: 1024px) {
+    .capabilities-wrapper {
+      flex-direction: row;
+    }
+
+    .capabilities-left {
+      width: 40%;
+      flex-shrink: 0;
+      padding-right: 4rem;
+    }
+
+    .capabilities-right {
+      width: 60%;
+      gap: 3rem;
+    }
+  }
+
+  /* Capability Indicators */
+  .capability-indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .capability-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+  }
+
+  .capability-indicator.active {
+    opacity: 1;
+  }
+
+  .indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--nickel);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .capability-indicator.active .indicator-dot {
+    background-color: var(--cyan-glow);
+    transform: scale(1.25);
+  }
+
+  .indicator-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  /* Capability Cards in pin layout */
+  .capabilities-right .capability-card {
+    opacity: 1;
+    transform: translateY(0);
+    will-change: transform, opacity;
+  }
+}
+
+/* ===== TOKEN REVEAL ANIMATION ===== */
+@layer components {
+  .token-reveal {
+    /* Ensure proper rendering during SplitText animation */
+    display: block;
+  }
+
+  /* Characters created by SplitText */
+  .token-reveal .char {
+    display: inline-block;
+    will-change: opacity;
+  }
+}
+

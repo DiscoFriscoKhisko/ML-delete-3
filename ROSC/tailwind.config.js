@@ -6,21 +6,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        'mint': '#00FFFF',
+        'mint': '#17f7f7',        // Cyan Glow
+        'black': '#090909',       // Black
+        'white-smoke': '#f3f4f4', // White Smoke
+        'alabaster': '#d5dada',   // Alabaster Grey
+        'white': '#fefefe',       // White
         'grey': {
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
+          50: '#fefefe',          // White
+          100: '#f3f4f4',         // White Smoke
+          200: '#d5dada',         // Alabaster Grey
+          300: '#d5dada',
           400: '#a3a3a3',
           500: '#737373',
           600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+          700: '#1a1a1a',
+          800: '#111111',
+          900: '#090909',         // Black
         }
       },
       fontFamily: {
-        'sans': ['Saans', 'system-ui', '-apple-system', 'sans-serif'],
+        'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        'serif': ['Merriweather', 'Georgia', 'serif'],
       },
       letterSpacing: {
         'tightish': '-0.02em',
