@@ -44,18 +44,17 @@ export const Header: React.FC = () => {
       <div className="px-4 md:px-8 lg:px-12 py-3">
         <nav className="flex items-center justify-between">
           {/* Logo - Porous Cube + M/L */}
-          <a href="/" className="relative z-50 flex items-center gap-3">
+          <a href="/" className="relative z-50 flex items-center gap-2">
             <img
               src="./assets/logos/porous-cube.png"
               alt="Material Lab"
-              className="h-8 w-auto max-h-8"
-              style={{ maxHeight: '32px', maxWidth: '32px' }}
+              className="h-6 w-auto"
+              style={{ maxHeight: '24px', maxWidth: '24px' }}
             />
             <img
               src="./assets/logos/material-lab-micro-logo-white.svg"
               alt="M/L"
               className="h-4 w-auto"
-              style={{ height: '16px', width: 'auto', maxHeight: '16px' }}
             />
           </a>
 
@@ -82,6 +81,9 @@ export const Header: React.FC = () => {
           {/* Menu Toggle */}
           <button
             onClick={toggleMenu}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
             className="menu-toggle relative z-50 flex flex-col gap-1.5 p-2 lg:hidden text-white"
           >
             <div className="flex w-5 h-2 flex-col items-start justify-between">
@@ -94,11 +96,15 @@ export const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       <div
+        id="mobile-menu"
         ref={menuOverlayRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
         className={`menu-overlay fixed inset-0 bg-oled z-40 opacity-0 ${menuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         <div className="h-full flex flex-col justify-center px-6 py-20">
-          <nav ref={menuLinksRef} className="space-y-4">
+          <nav ref={menuLinksRef} className="space-y-4" role="navigation" aria-label="Mobile navigation">
             <a href="#services" onClick={toggleMenu} className="menu-link block text-4xl font-bold text-white hover:text-laser transition-colors">
               Capabilities
             </a>

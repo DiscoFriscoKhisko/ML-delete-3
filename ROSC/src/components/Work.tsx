@@ -33,8 +33,7 @@ export const Work: React.FC = () => {
   useEffect(() => {
     if (sectionRef.current) {
       gsap.from(sectionRef.current.querySelectorAll('.work-animate'), {
-        y: MOTION.distance.medium,
-        opacity: 0,
+        y: MOTION.distance.small,
         stagger: MOTION.stagger.default,
         duration: MOTION.duration.default,
         ease: MOTION.ease.smooth,
@@ -65,30 +64,34 @@ export const Work: React.FC = () => {
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Left - Case Studies List */}
-          <div className="space-y-2">
+          <div className="space-y-2" role="listbox" aria-label="Case studies">
             {caseStudies.map((study, index) => (
-              <p
+              <button
                 key={study.name}
-                className={`work-item text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-200 ${
-                  activeCase === index ? 'text-white' : 'text-white/30 hover:text-white/50'
+                role="option"
+                aria-selected={activeCase === index}
+                className={`work-item w-full text-left text-[20px] md:text-[24px] font-bold leading-tight cursor-pointer transition-colors duration-200 bg-transparent border-none ${
+                  activeCase === index ? 'text-white' : 'text-white/50 hover:text-white/70'
                 }`}
                 onMouseEnter={() => setActiveCase(index)}
+                onFocus={() => setActiveCase(index)}
+                onClick={() => setActiveCase(index)}
               >
                 {study.name}{' '}
                 <span className={`text-[10px] font-normal ml-1 ${study.tagColor || ''}`}>
                   {study.tag}
                 </span>
-              </p>
+              </button>
             ))}
           </div>
 
-          {/* Right - Featured Cards */}
-          <div className="space-y-4">
+          {/* Right - Featured Card (single visible) */}
+          <div className="relative aspect-[4/3]">
             {caseStudies.map((study, index) => (
               <div
                 key={study.name}
-                className={`work-card depth-card relative aspect-[4/3] rounded-none overflow-hidden transition-opacity duration-300 ${
-                  activeCase === index ? 'opacity-100' : 'opacity-0 absolute inset-0'
+                className={`work-card depth-card absolute inset-0 rounded-none overflow-hidden transition-opacity duration-300 ${
+                  activeCase === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
               >
                 <img
@@ -96,20 +99,15 @@ export const Work: React.FC = () => {
                   alt={study.name}
                   className="absolute inset-0 w-full h-full object-cover filter-standard"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-oled/80 to-transparent"></div>
-                <div className="relative h-full p-6 flex flex-col justify-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-oled/80 to-transparent" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
                   <h3 className="text-[22px] md:text-[26px] font-bold text-white leading-tight">
-                    {study.description.split(';').map((line, i) => (
-                      <React.Fragment key={i}>
-                        {line}
-                        {i < study.description.split(';').length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
+                    {study.description}
                   </h3>
                 </div>
                 {study.badge && (
-                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md rounded-none px-3 py-1.5 flex items-center gap-2">
-                    <i className={`fa-solid ${study.badgeIcon} text-grey-600 text-[10px]`}></i>
+                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 flex items-center gap-2">
+                    <i className={`fa-solid ${study.badgeIcon} text-grey-600 text-[10px]`} />
                     <span className="text-[10px] text-grey-900 font-medium">{study.badge}</span>
                   </div>
                 )}

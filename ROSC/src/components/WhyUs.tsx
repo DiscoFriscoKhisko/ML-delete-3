@@ -18,9 +18,7 @@ export const WhyUs: React.FC = () => {
   useEffect(() => {
     if (sectionRef.current) {
       gsap.from(sectionRef.current.querySelectorAll('.why-item'), {
-        scale: 0.95,
         y: MOTION.distance.small,
-        opacity: 0,
         stagger: MOTION.stagger.fast,
         duration: MOTION.duration.default,
         ease: MOTION.ease.smooth,

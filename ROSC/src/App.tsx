@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
+import { useEffect } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
@@ -13,7 +12,6 @@ import { WhyUs } from './components/WhyUs'
 import { FinePrint } from './components/FinePrint'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
-import { Preloader } from './components/Preloader'
 import { SVGFilters } from './components/SVGFilters'
 
 // Brand Kit Motion Defaults
@@ -58,46 +56,28 @@ export const COLORS = {
 }
 
 function App() {
-  const [isLoading, setIsLoading] = React.useState(true)
-  const mainRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
-    // Simulate preloader
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
-
-    return () => clearTimeout(timer)
+    ScrollTrigger.refresh()
   }, [])
-
-  useEffect(() => {
-    if (!isLoading) {
-      // Refresh ScrollTrigger after content loads
-      ScrollTrigger.refresh()
-    }
-  }, [isLoading])
 
   return (
     <>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <SVGFilters />
-      {isLoading && <Preloader />}
-
-      <div ref={mainRef} className={isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-500'}>
-        <Header />
-        <main>
-          <Hero />
-          <CommonBuilds />
-          <About />
-          <Work />
-          <Capabilities />
-          <ClientMarquee />
-          <HowWeWork />
-          <WhyUs />
-          <FinePrint />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
+      <Header />
+      <main id="main-content">
+        <Hero />
+        <CommonBuilds />
+        <About />
+        <Work />
+        <Capabilities />
+        <ClientMarquee />
+        <HowWeWork />
+        <WhyUs />
+        <FinePrint />
+        <Contact />
+      </main>
+      <Footer />
     </>
   )
 }

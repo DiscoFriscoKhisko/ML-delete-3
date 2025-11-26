@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/ML-delete-3/',
+  base: '/',
   root: 'src',
   build: {
     outDir: '../dist',
@@ -18,11 +18,7 @@ export default defineConfig({
     alias: {
       'gsap': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm'),
       'gsap/ScrollTrigger': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/ScrollTrigger.js'),
-      'gsap/SplitText': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/SplitText.js'),
-      'gsap/ScrollToPlugin': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/ScrollToPlugin.js'),
-      'gsap/ScrollSmoother': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/ScrollSmoother.js'),
-      'gsap/Flip': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/Flip.js'),
-      'gsap/DrawSVGPlugin': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/DrawSVGPlugin.js')
+      'gsap/ScrollToPlugin': path.resolve('/Users/daminirathi/Desktop/ML explore/ML Claude experiments/gsap-public/esm/ScrollToPlugin.js')
     }
   }
 })

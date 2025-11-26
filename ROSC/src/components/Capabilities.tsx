@@ -57,15 +57,16 @@ export const Capabilities: React.FC = () => {
   useEffect(() => {
     if (sectionRef.current) {
       const cards = sectionRef.current.querySelectorAll('.capability-card')
-      cards.forEach((card, i) => {
+
+      cards.forEach((card) => {
         gsap.from(card, {
-          y: MOTION.distance.medium,
-          opacity: 0,
+          y: MOTION.distance.small,
           duration: MOTION.duration.default,
           ease: MOTION.ease.smooth,
           scrollTrigger: {
             trigger: card,
-            start: 'top 85%'
+            start: 'top 95%',
+            toggleActions: 'play none none none'
           }
         })
       })

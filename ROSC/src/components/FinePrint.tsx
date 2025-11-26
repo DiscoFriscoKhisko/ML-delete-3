@@ -9,8 +9,7 @@ export const FinePrint: React.FC = () => {
   useEffect(() => {
     if (sectionRef.current) {
       gsap.from(sectionRef.current.querySelectorAll('.fine-print-card'), {
-        y: MOTION.distance.medium,
-        opacity: 0,
+        y: MOTION.distance.small,
         stagger: MOTION.stagger.default,
         duration: MOTION.duration.default,
         ease: MOTION.ease.smooth,

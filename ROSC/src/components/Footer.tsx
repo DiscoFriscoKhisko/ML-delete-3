@@ -37,7 +37,8 @@ export const Footer: React.FC = () => {
                 <a
                   key={index}
                   href={link.href}
-                  className="social-link flex items-center gap-0.5 text-white/60 text-[12px] hover:text-laser transition-colors"
+                  className="social-link flex items-center gap-0.5 text-white/80 text-[12px] hover:text-laser transition-colors"
+                  aria-label={`Visit our ${link.icon.replace('fa-', '')} page`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -63,7 +64,7 @@ export const Footer: React.FC = () => {
 
           {/* Founders */}
           <div>
-            <h4 className="text-[14px] font-medium text-white/60 mb-4">Founders</h4>
+            <h4 className="text-[14px] font-medium text-white/80 mb-4">Founders</h4>
             <div className="space-y-4">
               {founders.map((founder) => (
                 <a
@@ -97,7 +98,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Legal */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-[10px] text-white/40">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-[10px] text-white/60">
           <span>© 2025 Material Lab. Building delightful things for good people.</span>
         </div>
       </div>
