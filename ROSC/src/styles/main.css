@@ -7,6 +7,7 @@
   --void-black: #050505;      /* Deepest background */
   --oled-black: #090909;      /* Surface level */
   --ghost-white: #fefefe;     /* Primary white */
+  --warm-white: #faf9f7;      /* Warm white - friendlier for light sections */
   --laser-cyan: #17f7f7;      /* Primary accent */
 
   /* Extended Palette - MlBrandKit */
@@ -173,6 +174,11 @@
 
   .bg-grey-900 {
     background-color: var(--log-cabin);
+  }
+
+  /* Warm white background for friendlier sections */
+  .bg-warm-white {
+    background-color: var(--warm-white);
   }
 
   /* Text colors */
@@ -640,15 +646,14 @@
     will-change: transform, box-shadow;
   }
 
-  /* MlBrandKit hover state - cyan glow */
+  /* MlBrandKit hover state - softened cyan glow for warmth */
   .depth-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(23, 247, 247, 0.2);
+    transform: translateY(-4px);
+    border-color: rgba(23, 247, 247, 0.15);
     box-shadow:
-      0 0 0 1px rgba(23, 247, 247, 0.3),
-      0 8px 24px rgba(0, 0, 0, 0.8),
-      0 24px 48px rgba(0, 0, 0, 0.8),
-      0 0 60px rgba(23, 247, 247, 0.05);
+      0 0 0 1px rgba(23, 247, 247, 0.2),
+      0 8px 24px rgba(0, 0, 0, 0.4),
+      0 16px 32px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -661,22 +666,22 @@
   }
 }
 
-/* ===== BRAND KIT: CYAN GLOW EFFECT ===== */
+/* ===== BRAND KIT: CYAN GLOW EFFECT (Softened for warmth) ===== */
 @layer utilities {
   .cyan-glow {
-    filter: drop-shadow(0 0 8px rgba(23, 247, 247, 0.3));
+    filter: drop-shadow(0 0 6px rgba(23, 247, 247, 0.2));
   }
 
   .cyan-glow-strong {
-    filter: drop-shadow(0 0 15px rgba(23, 247, 247, 0.5));
+    filter: drop-shadow(0 0 12px rgba(23, 247, 247, 0.35));
   }
 
   .shadow-cyan {
-    box-shadow: 0 0 15px rgba(23, 247, 247, 0.3);
+    box-shadow: 0 0 12px rgba(23, 247, 247, 0.2);
   }
 
   .shadow-cyan-strong {
-    box-shadow: 0 0 30px rgba(23, 247, 247, 0.4);
+    box-shadow: 0 0 24px rgba(23, 247, 247, 0.3);
   }
 }
 
@@ -1177,6 +1182,48 @@
 
   .filter-warm-tone {
     filter: url("#warm-filter");
+  }
+}
+
+/* ===== SCROLL SMOOTHER ===== */
+@layer components {
+  #smooth-wrapper {
+    overflow: hidden;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  #smooth-content {
+    overflow: visible;
+    width: 100%;
+  }
+}
+
+/* ===== SCROLL PROGRESS INDICATOR ===== */
+@layer components {
+  .scroll-progress {
+    will-change: transform;
+    pointer-events: none;
+  }
+}
+
+/* ===== PRELOADER TEXT ===== */
+@layer components {
+  .preloader-text {
+    font-family: 'Inter', -apple-system, sans-serif;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* ===== CTA BREATHING BUTTON ===== */
+@layer components {
+  .cta-breathing {
+    will-change: transform;
   }
 }
 

@@ -67,19 +67,27 @@ ROSC/
 All animations use GSAP with centralized motion defaults:
 ```javascript
 const MOTION = {
-  duration: { instant: 0.1, fast: 0.3, default: 0.5, slow: 0.7 },
-  ease: { primary: 'power2.out', emphatic: 'power3.out', brandReturn: 'power2.inOut' },
-  stagger: { default: 0.1, fast: 0.06 }
+  duration: { instant: 0.1, fast: 0.25, default: 0.4, slow: 0.6, reveal: 0.5, marquee: 20 },
+  ease: { primary: 'power2.out', emphatic: 'power3.out', playful: 'back.out(1.2)', smooth: 'power3.out' },
+  stagger: { default: 0.08, fast: 0.05, slow: 0.12 },
+  distance: { small: 20, medium: 30, large: 40 }
 }
 ```
 
 Key animation functions:
 - `initPreloader()` - Loading sequence with page entrance
+- `pageEntranceAnimation()` - Ellipse reveal animation after preloader
+- `initLineReveals()` - Line-by-line text reveals with SplitText
+- `initImageReveals()` - Image clip-path reveals
 - `initCapabilitiesPinReveal()` - ScrollTrigger pinned section
 - `initTokenGeneration()` - LLM-style character-by-character reveal
 - `initKineticGrid()` - Canvas-based interactive grid
 - `initDymaxionGlobe()` - D3-geo Waterman butterfly projection
 - `initDepthCardHovers()` - GSAP-controlled hover states
+- `initMagneticButtons()` - Magnetic cursor effect on buttons
+- `initTabNavigation()` - Animated tab underline
+- `initHoverCaptions()` - Hover caption overlays
+- `initScrollProgress()` - Scroll progress indicator at top
 
 ### State Management
 - **Alpine.js stores:** `menu` (open/toggle), `cursor` (active/icon)
@@ -104,3 +112,6 @@ Plugins used: ScrollTrigger, SplitText, ScrollToPlugin
 - **ScrollTrigger:** Desktop/mobile responsive via `ScrollTrigger.matchMedia()`
 - **SVG Filters:** Defined in HTML, referenced via `.filter-*` classes
 - **Custom Cursor:** Hidden native cursor on `(pointer: fine)` devices
+- **Scroll Progress Bar:** Fixed top element tracking scroll position with scaleX animation
+- **Token Generation:** Uses SplitText chars with 0.015s stagger timing
+- **Responsive Motion:** `matchMedia()` reduces distances/durations on mobile

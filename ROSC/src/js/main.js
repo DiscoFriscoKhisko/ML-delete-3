@@ -3,32 +3,40 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { geoGraticule, geoPath } from 'd3-geo'
 import { geoPolyhedralWaterman } from 'd3-geo-projection'
 
 // Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, SplitText, ScrollToPlugin)
+gsap.registerPlugin(ScrollTrigger, SplitText, ScrollToPlugin, ScrollSmoother)
 
-// ===== BRAND KIT MOTION DEFAULTS =====
+// ===== BRAND KIT MOTION DEFAULTS (Softened for warmth & partnership feel) =====
 const MOTION = {
   duration: {
     instant: 0.1,      // Magnetic hover response (100ms)
-    fast: 0.3,
-    default: 0.5,
-    slow: 0.7,
+    fast: 0.2,         // Faster for snappier, friendly feel
+    default: 0.35,     // Reduced - feels more natural & effortless
+    slow: 0.5,         // Softer reveal timing
+    reveal: 0.45,      // For scroll reveals - slightly faster
     marquee: 20        // Infinite marquee (20s)
   },
   ease: {
-    primary: 'power2.out',
-    emphatic: 'power3.out',
-    playful: 'back.out(1.5)',
-    smooth: 'power4.out',
-    brandReturn: 'power2.inOut'  // Brand kit spring-like return
+    primary: 'power2.out',     // Softer than power3
+    emphatic: 'power2.out',    // Changed from power3 - less dramatic
+    playful: 'back.out(1.1)',  // Reduced bounce for subtlety
+    smooth: 'power2.out',      // Softer - less dramatic
+    brandReturn: 'power2.out', // Smooth return
+    natural: 'power2.inOut'    // For organic movements
   },
   stagger: {
-    default: 0.1,
-    fast: 0.06,        // Brand kit: 60ms
-    slow: 0.15
+    default: 0.06,     // Slightly faster stagger for friendlier feel
+    fast: 0.04,
+    slow: 0.1
+  },
+  distance: {
+    small: 15,         // Further reduced travel distances
+    medium: 25,
+    large: 35          // Subtler movements
   }
 }
 
@@ -41,20 +49,21 @@ const COLORS = {
   nickel: '#737373'
 }
 
-// Preloader animation
+// Preloader animation - Simplified for warmth
 function initPreloader() {
   const preloader = document.querySelector('.preloader')
-  const counter = document.querySelector('.preloader-counter')
   const logo = document.querySelector('.preloader-logo')
+  const text = document.querySelector('.preloader-text')
 
-  if (!preloader || !counter) return
+  if (!preloader || !logo) return
 
   const tl = gsap.timeline({
     onComplete: () => {
+      // Simple fade out instead of dramatic slide
       gsap.to(preloader, {
-        yPercent: -100,
-        duration: MOTION.duration.slow,
-        ease: MOTION.ease.smooth,
+        opacity: 0,
+        duration: MOTION.duration.default,
+        ease: MOTION.ease.natural,
         onComplete: () => {
           preloader.style.display = 'none'
           pageEntranceAnimation()
@@ -63,22 +72,25 @@ function initPreloader() {
     }
   })
 
-  // Fade in logo
+  // Simple logo fade in with subtle scale
   tl.to(logo, {
     opacity: 1,
-    duration: MOTION.duration.default,
-    ease: MOTION.ease.primary
+    scale: 1,
+    duration: MOTION.duration.slow,
+    ease: MOTION.ease.smooth
   })
 
-  // Count up animation
-  tl.to({}, {
-    duration: 2,
-    onUpdate: function() {
-      const progress = Math.round(this.progress() * 100)
-      counter.textContent = progress + '%'
-    },
-    ease: MOTION.ease.primary
-  }, '-=0.3')
+  // Fade in friendly text
+  if (text) {
+    tl.to(text, {
+      opacity: 1,
+      duration: MOTION.duration.default,
+      ease: MOTION.ease.primary
+    }, '-=0.3')
+  }
+
+  // Brief pause to show the branding
+  tl.to({}, { duration: 0.8 })
 }
 
 // Line-by-line text reveal animations
@@ -281,65 +293,80 @@ Alpine.data('navigation', () => ({
   }
 }))
 
-// Page entrance animation - SVG Ellipse Mask Reveal
+// Page entrance animation - Softened for natural feel
 function pageEntranceAnimation() {
   const ellipse = document.querySelector('.js-reveal-ellipse')
   const heroTitle = document.querySelector('.hero-title')
   const heroSubtitle = document.querySelector('.hero-subtitle')
-  const heroCta = document.querySelector('.hero-cta')
+  const heroBadges = document.querySelectorAll('.hero-badge')
+  const heroCtaBtns = document.querySelectorAll('.hero-cta-btn')
 
   if (!ellipse) return
 
   const tl = gsap.timeline()
 
-  // Ellipse reveal - exact values from original
+  // Ellipse reveal - faster, softer, more welcoming
   tl.to(ellipse, {
     attr: { rx: 2700, ry: 2150 },
-    duration: 1.25,
-    ease: 'power2.out'
+    duration: 0.6,  // Further reduced for effortless feel
+    ease: 'power2.out'  // Softer easing
   })
 
-  // Hero content animations
+  // Hero badges first (establishes context)
+  if (heroBadges.length) {
+    tl.from(heroBadges, {
+      y: -MOTION.distance.small,
+      opacity: 0,
+      stagger: MOTION.stagger.fast,
+      duration: MOTION.duration.default,
+      ease: MOTION.ease.primary
+    }, '-=0.3')
+  }
+
+  // Hero title - reduced travel distance
   if (heroTitle) {
     tl.from(heroTitle, {
-      y: 100,
+      y: MOTION.distance.large,
       opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out'
-    }, '-=0.6')
+      duration: MOTION.duration.slow,
+      ease: MOTION.ease.smooth
+    }, '-=0.2')
   }
 
+  // Subtitle - even smaller movement
   if (heroSubtitle) {
     tl.from(heroSubtitle, {
-      y: 50,
+      y: MOTION.distance.medium,
       opacity: 0,
-      duration: 0.6,
-      ease: 'power3.out'
-    }, '-=0.4')
+      duration: MOTION.duration.default,
+      ease: MOTION.ease.primary
+    }, '-=0.3')
   }
 
-  if (heroCta) {
-    tl.from(heroCta, {
-      y: 30,
+  // CTA buttons with playful bounce
+  if (heroCtaBtns.length) {
+    tl.from(heroCtaBtns, {
+      y: MOTION.distance.small,
       opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out'
-    }, '-=0.3')
+      stagger: MOTION.stagger.fast,
+      duration: MOTION.duration.default,
+      ease: MOTION.ease.playful
+    }, '-=0.2')
   }
 }
 
-// Scroll animations with ScrollTrigger
+// Scroll animations with ScrollTrigger (Softened values)
 function initScrollAnimations() {
-  // Fade in elements on scroll
+  // Fade in elements on scroll - reduced travel for subtlety
   gsap.utils.toArray('.fade-in').forEach(el => {
     gsap.from(el, {
-      y: 50,
+      y: MOTION.distance.medium,  // Reduced from 50
       opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
+      duration: MOTION.duration.reveal,
+      ease: MOTION.ease.smooth,
       scrollTrigger: {
         trigger: el,
-        start: 'top 80%',
+        start: 'top 85%',  // Start slightly earlier
         toggleActions: 'play none none reverse'
       }
     })
@@ -349,14 +376,14 @@ function initScrollAnimations() {
   const logoItems = document.querySelectorAll('.logo-item')
   if (logoItems.length) {
     gsap.from(logoItems, {
-      y: 30,
+      y: MOTION.distance.small,
       opacity: 0,
-      stagger: 0.1,
-      duration: 0.6,
-      ease: 'power3.out',
+      stagger: MOTION.stagger.default,
+      duration: MOTION.duration.default,
+      ease: MOTION.ease.smooth,
       scrollTrigger: {
         trigger: '.logo-grid',
-        start: 'top 80%'
+        start: 'top 85%'
       }
     })
   }
@@ -617,13 +644,13 @@ function initCapabilitiesPinReveal() {
         })
       })
 
-      // Card reveal animations with stagger
+      // Card reveal animations - softened travel distance
       cards.forEach((card, i) => {
         gsap.from(card, {
-          y: 80,
+          y: MOTION.distance.large,  // Reduced from 80
           opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: MOTION.duration.slow,
+          ease: MOTION.ease.smooth,
           scrollTrigger: {
             trigger: card,
             start: 'top 85%',
@@ -636,10 +663,10 @@ function initCapabilitiesPinReveal() {
     '(max-width: 1023px)': () => {
       cards.forEach((card, i) => {
         gsap.from(card, {
-          y: 60,
+          y: MOTION.distance.medium,  // Reduced from 60
           opacity: 0,
-          duration: 0.7,
-          ease: 'power3.out',
+          duration: MOTION.duration.default,
+          ease: MOTION.ease.smooth,
           scrollTrigger: {
             trigger: card,
             start: 'top 85%',
@@ -732,16 +759,17 @@ function initMaterialLabAnimations() {
     })
   }
 
-  // Hero CTAs animation
+  // Hero CTAs animation - softer, no bounce
   const heroCtas = document.querySelectorAll('.hero-cta-btn')
   if (heroCtas.length) {
     gsap.from(heroCtas, {
-      scale: 0.9,
+      scale: 0.95,
+      y: 10,
       opacity: 0,
-      stagger: 0.1,
-      duration: 0.6,
-      delay: 2,
-      ease: 'back.out(1.5)'
+      stagger: 0.08,
+      duration: 0.5,
+      delay: 1.8,
+      ease: 'power2.out'  // Removed bounce
     })
   }
 
@@ -763,35 +791,37 @@ function initMaterialLabAnimations() {
     })
   }
 
-  // How We Work cards
+  // How We Work cards - softer reveal with y movement instead of x
   const howWeWorkCards = document.querySelectorAll('.how-we-work-card')
   if (howWeWorkCards.length) {
     howWeWorkCards.forEach((card, i) => {
       gsap.from(card, {
-        x: i % 2 === 0 ? -50 : 50,
+        y: 25,  // Changed from x to y (less jarring)
+        rotation: i % 2 === 0 ? -1.5 : 1.5,  // Subtle organic tilt
         opacity: 0,
-        duration: 0.7,
-        ease: 'power3.out',
+        duration: 0.5,
+        ease: 'power2.out',  // Softer
         scrollTrigger: {
           trigger: card,
-          start: 'top 80%'
+          start: 'top 82%'  // Start earlier
         }
       })
     })
   }
 
-  // Why choose us items
+  // Why choose us items - softer, no bounce for professional feel
   const whyItems = document.querySelectorAll('.why-item')
   if (whyItems.length) {
     gsap.from(whyItems, {
-      scale: 0.9,
+      scale: 0.95,  // Less dramatic start
+      y: 15,        // Add slight y movement
       opacity: 0,
-      stagger: 0.1,
-      duration: 0.6,
-      ease: 'back.out(1.5)',
+      stagger: 0.08,
+      duration: 0.5,
+      ease: 'power2.out',  // Removed bounce
       scrollTrigger: {
         trigger: whyItems[0].parentElement,
-        start: 'top 75%'
+        start: 'top 78%'
       }
     })
   }
@@ -1169,25 +1199,25 @@ function initWorkCardTransitions() {
   })
 }
 
-// Depth card hover effect (Brand Kit: layered shadows with cyan rim on hover)
+// Depth card hover effect (Softened - less electric, more gentle lift)
 function initDepthCardHovers() {
   document.querySelectorAll('.depth-card').forEach(card => {
     card.addEventListener('mouseenter', () => {
       gsap.to(card, {
-        y: -2,
-        boxShadow: '0 0 0 1px rgba(23, 247, 247, 0.3), 0 8px 24px rgba(0, 0, 0, 0.6), 0 24px 48px rgba(0, 0, 0, 0.6), 0 0 80px rgba(23, 247, 247, 0.1)',
+        y: -4,  // Increased lift for more visible feedback
+        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(23, 247, 247, 0.15)',  // Simpler, softer
         borderColor: 'rgba(23, 247, 247, 0.1)',
-        duration: MOTION.duration.default,
-        ease: MOTION.ease.brandReturn  // Brand kit easing
+        duration: 0.3,
+        ease: 'power2.out'
       })
     })
     card.addEventListener('mouseleave', () => {
       gsap.to(card, {
         y: 0,
-        boxShadow: '0 0 0 1px rgba(0, 0, 0, 1), 0 4px 12px rgba(0, 0, 0, 0.5), 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 40px rgba(23, 247, 247, 0.02)',
-        borderColor: 'rgba(255, 255, 255, 0.08)',
-        duration: MOTION.duration.default,
-        ease: MOTION.ease.brandReturn  // Brand kit easing
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.8)',
+        borderColor: 'rgba(255, 255, 255, 0.05)',
+        duration: 0.3,
+        ease: 'power2.out'
       })
     })
   })
@@ -1495,7 +1525,7 @@ function initDymaxionGlobe() {
   const container = canvas.parentElement
   const size = Math.min(container.offsetWidth, container.offsetHeight) || 400
   const color = '#17f7f7'
-  const rotationSpeed = 0.2
+  const rotationSpeed = 0.08  // Slowed down for subtlety
 
   // City coordinates (lat, lng) - BLR and SF only
   const cities = [
@@ -1658,10 +1688,10 @@ function initGrainyCursor() {
   })
 }
 
-// ===== BRAND KIT: MAGNETIC BADGE EFFECTS =====
+// ===== BRAND KIT: MAGNETIC BADGE EFFECTS (Softened for warmth) =====
 function initMagneticBadges() {
   const badges = document.querySelectorAll('.magnetic-badge')
-  const strength = 0.5
+  const strength = 0.3  // Reduced from 0.5 for gentler feel
 
   badges.forEach(badge => {
     badge.addEventListener('mousemove', (e) => {
@@ -1675,7 +1705,7 @@ function initMagneticBadges() {
       gsap.to(badge, {
         x: distX,
         y: distY,
-        duration: 0.1,
+        duration: 0.15,
         ease: MOTION.ease.primary
       })
     })
@@ -1684,8 +1714,8 @@ function initMagneticBadges() {
       gsap.to(badge, {
         x: 0,
         y: 0,
-        duration: MOTION.duration.default,
-        ease: 'elastic.out(1, 0.5)'
+        duration: 0.4,  // Slower, smoother return
+        ease: 'power2.out'  // Softer than elastic
       })
     })
 
@@ -1710,11 +1740,73 @@ function initMagneticBadges() {
   })
 }
 
+// ===== SCROLL SMOOTHER =====
+// Creates buttery smooth scrolling - "It just feels a bit better"
+let smoother = null
+
+function initScrollSmoother() {
+  // Only on desktop - touch devices have native smooth scroll
+  if (window.matchMedia('(pointer: fine)').matches) {
+    smoother = ScrollSmoother.create({
+      wrapper: '#smooth-wrapper',
+      content: '#smooth-content',
+      smooth: 1.2,           // Smoothness level (1 = normal, 2 = very smooth)
+      effects: true,         // Enable data-speed and data-lag effects
+      smoothTouch: 0.1,      // Light smoothing on touch devices
+      normalizeScroll: true, // Prevents address bar issues on mobile
+      ignoreMobileResize: true
+    })
+  }
+}
+
+// ===== SCROLL PROGRESS INDICATOR =====
+function initScrollProgress() {
+  const progressBar = document.querySelector('.scroll-progress')
+  if (!progressBar) return
+
+  gsap.to(progressBar, {
+    scaleX: 1,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.3
+    }
+  })
+}
+
+// ===== CTA BREATHING ANIMATION =====
+// Subtle pulse on main CTA to draw attention
+function initCtaBreathing() {
+  const ctaButton = document.querySelector('#contact .btn-primary')
+  if (!ctaButton) return
+
+  // Add class for will-change optimization
+  ctaButton.classList.add('cta-breathing')
+
+  // Subtle breathing animation
+  gsap.to(ctaButton, {
+    scale: 1.02,
+    duration: 2,
+    ease: 'sine.inOut',
+    yoyo: true,
+    repeat: -1,
+    paused: false
+  })
+}
+
 // Initialize everything when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   // Start Alpine
   window.Alpine = Alpine
   Alpine.start()
+
+  // Initialize ScrollSmoother first (needs to be before other scroll-based animations)
+  initScrollSmoother()
+
+  // Initialize scroll progress indicator
+  initScrollProgress()
 
   // Run preloader (which triggers page entrance after)
   initPreloader()
@@ -1756,13 +1848,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Brand Kit v2.0 features
   initTabNavigation()
   initHoverCaptions()
-  initKineticGrid()
+  // initKineticGrid() - Removed for cleaner, warmer feel
   initGrainyCursor()
   initMagneticBadges()
 
   // Initialize Brand Kit Digital Visual Elements
   initDymaxionGlobe()
   initStaggeredReveal()
+
+  // Initialize warmth/partnership animations
+  initCtaBreathing()
 })
 
 // Refresh ScrollTrigger on window resize

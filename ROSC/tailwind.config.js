@@ -11,6 +11,7 @@ export default {
         'oled': '#090909',        // OLED Black - Surface level
         'surface': '#1a1d21',     // Surface Dark - Card backgrounds
         'ghost': '#fefefe',       // Ghost White - Primary white
+        'warm-white': '#faf9f7',  // Warm White - Friendlier white for light sections
         'alabaster': '#d5dada',   // Alabaster Grey - Structure
         'smoke': '#f3f4f4',       // White Smoke - Light grey
         'laser': '#17f7f7',       // Laser Cyan - Primary accent

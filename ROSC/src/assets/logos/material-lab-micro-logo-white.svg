@@ -1,4 +1,7 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-      <rect width="512" height="512" fill="none"/>
-      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Merriweather, serif" font-weight="bold" font-size="400" fill="#FFFFFF" dy=".1em">m</text>
-    </svg>
+  <rect width="512" height="512" fill="none"/>
+  <!-- M/L Monogram - White variant -->
+  <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-family="Merriweather, Georgia, serif" font-weight="bold" font-size="280">
+    <tspan fill="#FFFFFF">M</tspan><tspan fill="#17f7f7">/</tspan><tspan fill="#FFFFFF">L</tspan>
+  </text>
+</svg>
