@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Index
+
+- [Development Commands](#development-commands)
+- [Architecture](#architecture)
+  - [GSAP Setup](#gsap-setup-critical)
+  - [Key Constants](#key-constants)
+- [Important Patterns](#important-patterns)
+
+---
+
 ## Development Commands
 
 ```bash
